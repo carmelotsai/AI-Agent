@@ -1,0 +1,13 @@
+node_modules/
+.env
+data/
+agent.log
+文件/
+日誌/
+提醒.json
+通知.json
+排程.json
+固定會議.json
+情報.json
+待辦.json
+建置紀錄.md

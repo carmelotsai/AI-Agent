@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 秘書學員手冊 L0～L1</title>
+<style>
+:root{--bg:#f7f6f2;--fg:#1f2328;--muted:#5d6570;--line:#dcd8cf;--card:#fff;--head:#f0ede6;--accent:#2f6fb3;--ok:#1f8a4c;--ok-bg:#e3f4ea;--bad:#c0392b;--bad-bg:#fbe5e2;--code:#f1efe9;--agent:#eaf1fb;--agent-line:#9dbbe3;--other:#eef6ee;--other-line:#9cc7a4;--warn-bg:#fdf3e1;--warn-line:#e0a940}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1c1e;--fg:#e6e6e3;--muted:#a3a7ad;--line:#393b3f;--card:#232427;--head:#2c2e32;--accent:#7fb0e8;--ok:#5fcf8f;--ok-bg:#1f3a2a;--bad:#f08a7c;--bad-bg:#43241f;--code:#2b2c30;--agent:#1f2a3a;--agent-line:#3d5a80;--other:#1f3324;--other-line:#3f7a4c;--warn-bg:#3a2f1a;--warn-line:#a07a2c}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 "Microsoft JhengHei UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+header.top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px}
+.top-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline}
+.top h1{font-size:18px;margin:0}.top span{font-size:14px;color:var(--muted)}
+.layout{max-width:1180px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
+@media (min-width:1080px){.layout{grid-template-columns:220px minmax(0,1fr)}}
+nav.side{display:none}
+@media (min-width:1080px){nav.side{display:block;position:sticky;top:70px;align-self:start;max-height:calc(100vh - 90px);overflow:auto;font-size:14px}}
+nav.side a{display:block;color:var(--fg);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav.side a.sub{padding-left:22px;font-size:13px;color:var(--muted)}
+nav.side a:hover{color:var(--accent);border-left-color:var(--accent)}
+main{min-width:0}
+section.lesson{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 22px 20px;margin-bottom:26px;scroll-margin-top:70px}
+section.lesson>h2{font-size:23px;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:4px}
+.subtitle{color:var(--muted);margin:0 0 10px}
+h3{font-size:19px;margin:28px 0 8px;scroll-margin-top:70px}
+h4{font-size:16.5px;margin:20px 0 6px}
+p,ul,ol{margin:8px 0}li{margin:3px 0}
+code{font-family:Consolas,"Cascadia Mono",monospace;font-size:.9em;background:var(--code);padding:.1em .35em;border-radius:4px}
+.note{margin:12px 0;padding:8px 14px;border-left:4px solid var(--warn-line);background:var(--warn-bg);border-radius:0 6px 6px 0}
+.tip{margin:12px 0;padding:8px 14px;border-left:4px solid var(--muted);background:var(--bg);border-radius:0 6px 6px 0}
+.key{margin:12px 0;padding:8px 14px;border-left:4px solid var(--accent);background:var(--agent);border-radius:0 6px 6px 0}
+.blk{margin:10px 0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.blk .lbl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:4px 10px;background:var(--head);color:var(--muted)}
+.blk pre{margin:0;padding:10px 12px;overflow:auto;font-family:Consolas,"Cascadia Mono","Microsoft JhengHei UI",monospace;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+.blk.agent{border-color:var(--agent-line)}.blk.agent .lbl{background:var(--agent);color:var(--accent)}.blk.agent pre{background:var(--agent)}
+.blk.other{border-color:var(--other-line)}.blk.other .lbl{background:var(--other);color:var(--ok)}.blk.other pre{background:var(--other)}
+.blk.screen{border-style:dashed}.blk.screen pre{background:transparent;color:var(--muted)}
+.copy{font:inherit;font-size:12.5px;padding:2px 10px;border:1px solid currentColor;border-radius:12px;background:var(--card);color:inherit;cursor:pointer}
+.copy.ok{color:var(--ok)}
+.table{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--head);white-space:nowrap}tr:last-child td{border-bottom:0}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:12px 0}
+.legend .blk{margin:0}
+a{color:var(--accent)}
+@media (max-width:700px){section.lesson{padding:6px 14px 16px}th,td{padding:6px 7px}}
+@media print{header.top,nav.side,.copy{display:none}.layout{display:block}section.lesson{break-before:page}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <h1>AI 秘書學員手冊 L0～L1</h1>
+  <span>桌面版：用 Antigravity 桌面 App 當施工人員（依 App 2.19.1 實測，2026-10）</span>
+</div></header>
+
+<div class="layout">
+<nav class="side" id="nav"></nav>
+<main>
+
+<!-- ===================== 使用說明 ===================== -->
+<section class="lesson" id="howto" data-title="開始之前">
+<h2>開始之前</h2>
+<p>這份手冊帶你從零開始：先準備好一位「施工人員」（L0 招聘準備），再請他幫你蓋好自己的 AI 秘書（L1 到職）。</p>
+<p>本課程的施工人員用 Google 的 <b>Antigravity 桌面 App</b>。你用 Claude Code、Codex、Antigravity CLI 等其他 coding agent 也可以，概念和工單都一樣，只是畫面不同。</p>
+
+<h3>手冊裡的三種框</h3>
+<div class="legend">
+  <div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>交給施工人員的話</pre></div>
+  <div class="blk other"><div class="lbl">⌨️ 貼到框上寫的地方<button class="copy" type="button">複製</button></div><pre>例如檔案總管的網址列、PowerShell</pre></div>
+  <div class="blk screen"><div class="lbl">👀 畫面會顯示（不用複製）</div><pre>App 或程式會出現的字</pre></div>
+</div>
+<p>每一課最後都有<b>結訓考核</b>，全部做得到再進下一課。</p>
+
+<div class="tip">畫面上的英文按鈕和訊息，手冊照原文寫，旁邊附上中文意思。App 改版後字可能不太一樣，找意思相近的按鈕即可。</div>
+</section>
+
+<!-- ===================== L0-1 ===================== -->
+<section class="lesson" id="L0-1" data-title="L0-1・基本概念">
+<h2>L0-1・基本概念</h2>
+<p class="subtitle">招聘準備第一課：先搞懂你要招的是什麼人</p>
+<p>從 L1 開始，你會招一位 AI 秘書。但秘書的辦公室要有人幫你裝潢：這個人叫 <b>coding agent</b>，本課程叫他「<b>施工人員</b>」。招人之前，先把幾個名詞搞懂。這一課不用動手，也不用裝任何東西。</p>
+
+<h3 id="L0-1-a">一、聊天機器人 vs. Agent</h3>
+<div class="table"><table>
+<tr><th></th><th>聊天機器人（例如網頁版 Gemini、ChatGPT）</th><th>Agent</th></tr>
+<tr><td>比喻</td><td><b>電話諮詢的顧問</b>：你問，他答</td><td><b>到府施工的師傅</b>：你交代，他動手做</td></tr>
+<tr><td>看得到什麼</td><td>只看得到你貼給他的東西</td><td>可以自己打開你電腦裡的檔案</td></tr>
+<tr><td>做完的東西</td><td>一段文字，你自己複製、自己存檔</td><td>直接幫你寫進檔案</td></tr>
+<tr><td>做事方式</td><td>一問一答</td><td>自己拆步驟、一步一步做，做完回報</td></tr>
+</table></div>
+<p>Agent 能自己動手，靠的是<b>工具</b>：讀檔、寫檔、執行指令、上網查資料。有工具，它就從「會說」變成「會做」。</p>
+
+<h3 id="L0-1-b">二、施工人員和秘書</h3>
+<div class="table"><table>
+<tr><th></th><th>施工人員（coding agent）</th><th>秘書（L1 開始招）</th></tr>
+<tr><td>住在哪裡</td><td>你電腦上的 Antigravity 桌面 App</td><td>你電腦上，透過手機 Telegram 找他</td></tr>
+<tr><td>負責什麼</td><td>照《施工工單》幫你把秘書蓋好、升級</td><td>每天幫你辦事：會議紀錄、週報、行程……</td></tr>
+</table></div>
+<p><b>L0 的目標，就是讓你有一位會用的施工人員。</b>之後每一課，你都是把一份工單交給他，他照著做。</p>
+
+<h3 id="L0-1-c">三、token、上下文、額度</h3>
+<ul>
+  <li><b>token</b>：模型計算文字的單位。中文大約一個字算一個 token 上下。你打的字、它讀的檔案、它回的話，全部都算。</li>
+  <li><b>上下文</b>：它這一次對話能同時記住的份量，像一張工作桌面。對話越長、讀的檔案越多，桌面越滿，前面的事就容易漏掉。所以<b>換一件事做，就開一段新的對話</b>（L0-4 教）。</li>
+</ul>
+<div class="table"><table>
+<tr><th></th><th>意思</th><th>比喻</th></tr>
+<tr><td><b>額度</b></td><td>一段時間內總共能用多少</td><td>每個月的手機流量</td></tr>
+<tr><td><b>速率限制</b></td><td>一分鐘內不能問太多次</td><td>櫃台一次只能服務幾個人</td></tr>
+</table></div>
+<p>免費方案兩種都有上限。看到「額度已到」「rate limit」，<b>不是壞掉</b>，是用到上限了：等一下再試，或等額度重置。</p>
+
+<h3 id="L0-1-d">四、帳號登入 vs. API Key</h3>
+<div class="table"><table>
+<tr><th></th><th>帳號登入</th><th>API Key</th></tr>
+<tr><td>比喻</td><td><b>本人刷員工證</b>進門</td><td><b>公司大小章</b>：誰拿到誰就能用</td></tr>
+<tr><td>給誰用</td><td>人坐在電腦前操作的工具</td><td>程式自己在背景呼叫</td></tr>
+<tr><td>本課程誰用</td><td>施工人員（L0-3 用 Google 帳號登入）</td><td>秘書（L0-5 申請，L1 填進設定檔）</td></tr>
+</table></div>
+<p>API Key 外流，別人就能用你的額度。所以<b>不要貼進任何對話框</b>（包括施工人員的）、不要截圖、不要傳到群組，只放進 L1 會教的 <code>.env</code> 設定檔。</p>
+
+<h3 id="L0-1-e">五、權限：它什麼時候會先問你</h3>
+<p>Agent 能動你的電腦，所以有些事會先問你。在 Antigravity 桌面 App 的預設設定（<code>Default</code>）下：</p>
+<div class="table"><table>
+<tr><th>它要做的事</th><th>會不會先問</th><th>風險</th></tr>
+<tr><td>讀<b>工作資料夾裡</b>的檔案</td><td>不問</td><td>低；但內容會送到雲端</td></tr>
+<tr><td>建立、修改<b>工作資料夾裡</b>的檔案</td><td><b>不問</b>，做完才顯示改了什麼</td><td>中；可能改壞你的檔案</td></tr>
+<tr><td>讀寫<b>工作資料夾外</b>的檔案</td><td>會問</td><td>中</td></tr>
+<tr><td><b>執行指令</b></td><td>會問</td><td>高；指令可以做幾乎任何事</td></tr>
+</table></div>
+<p>本課程的原則是「<b>先擋得住，再放手</b>」：</p>
+<ol>
+  <li><b>工作資料夾只放練習用的東西。</b>它在裡面寫檔、改檔不會先問你，所以重要的檔案不要放進去，要練習就先複製一份。</li>
+  <li><b>它要執行指令時，先看一眼再允許。</b>看不懂就先問它「這是在做什麼」。</li>
+  <li><b>做完自己檢查。</b>它說做好了，自己打開檔案確認。</li>
+  <li><b>不要開「全部自動允許」</b>（App 裡叫 <code>Turbo mode</code>）。網路教學常教這招來省事，本課程不用。</li>
+</ol>
+<p>秘書也一樣：L2-5 會教你叫他停下來，L3-2 會幫他設好「哪些事只能看、哪些要先問你」。</p>
+
+<h3 id="L0-1-f">六、你的資料會送到哪裡</h3>
+<p>Agent 的「大腦」是雲端上的模型。<b>你打的每一個字、它讀的每一份檔案，都會送到 Google 的伺服器。</b></p>
+<ul>
+  <li>依 Google 目前的條款，<b>免費方案的內容可能被用來改善 Google 的產品</b>，也可能有人工審閱。秘書用的 API Key 要開通付費才不會被拿去用（L1 第五章「轉正」）。</li>
+  <li>所以練習時<b>不要放公司機密、客戶資料、密碼、身分證字號</b>。</li>
+  <li>練習用的檔案放在獨立的資料夾（L0-2 建），不要讓它碰你其他的資料。</li>
+</ul>
+
+<h3>結訓考核</h3>
+<p>用自己的話回答，講得出來就算通過。</p>
+<div class="table"><table>
+<tr><th>#</th><th>考核項目</th><th>合格標準</th></tr>
+<tr><td>T0-1-01</td><td>Agent 跟聊天機器人差在哪？</td><td>講得出「Agent 會自己讀檔、寫檔、執行指令」</td></tr>
+<tr><td>T0-1-02</td><td>為什麼會出現「額度已到」？</td><td>講得出「免費方案有用量上限，不是壞掉」</td></tr>
+<tr><td>T0-1-03</td><td>帳號登入和 API Key 有什麼不同？</td><td>講得出「API Key 誰拿到誰能用，所以不能外流」</td></tr>
+<tr><td>T0-1-04</td><td>哪些事它會先問、哪些不會？</td><td>講得出「執行指令會問；工作資料夾裡讀寫檔不問，所以只放練習用的東西、做完自己檢查」</td></tr>
+</table></div>
+</section>
+
+<!-- ===================== L0-2 ===================== -->
+<section class="lesson" id="L0-2" data-title="L0-2・練習資料夾">
+<h2>L0-2・練習資料夾</h2>
+<p class="subtitle">招聘準備第二課：找到家目錄，建一個給施工人員的資料夾</p>
+<p>施工人員只在一個資料夾裡工作，本課程叫它「<b>工作資料夾</b>」。這一課用檔案總管，在你的家目錄裡建一個練習用的工作資料夾 <code>ai-practice</code>，並且學會<b>在任何視窗裡都找得到它</b>。</p>
+
+<h3 id="L0-2-a">一、家目錄在哪裡</h3>
+<p>每個人的電腦都有一個<b>家目錄</b>，就是你的個人資料夾，「文件」「下載」「桌面」都在它裡面。我們一層一層點進去找它：</p>
+<ol>
+  <li>打開<b>檔案總管</b>（工作列上的黃色資料夾圖示，或按鍵盤 <code>Windows 鍵 + E</code>）。</li>
+  <li>左邊往下找到「<b>本機</b>」，點它。</li>
+  <li>右邊會出現你的磁碟。雙擊名字後面有 <b><code>(C:)</code></b> 的那一個。名字每台電腦不一樣，例如「本機磁碟 (C:)」「OS (C:)」。</li>
+  <li>雙擊「<b>使用者</b>」資料夾。</li>
+  <li>裡面有幾個資料夾，雙擊<b>你自己的那一個</b>。名字通常是你登入 Windows 時的名字或它的縮寫（不是「公用」「Public」）。</li>
+</ol>
+<p>現在你就在家目錄裡了，會看到「文件」「下載」「桌面」等資料夾。</p>
+
+<h4>網址列：資料夾的完整地址</h4>
+<p>檔案總管上方那一長條叫<b>網址列</b>。它平常顯示的是好讀的名字，例如「本機 &gt; 你的名字」，有時候顯示的是你的<b>帳號名稱</b>，不一定等於資料夾真正的名字。例如手冊作者的電腦，網址列顯示「Carmelo Tsai」，資料夾真正的名字卻是 <code>carme</code>。</p>
+<p><b>點一下網址列</b>，它會變成資料夾真正的完整地址：</p>
+<div class="blk screen"><div class="lbl">👀 點一下網址列後會顯示（這是手冊作者的電腦；你的最後一段會是你自己的資料夾名稱）</div><pre>C:\Users\carme</pre></div>
+<div class="table"><table>
+<tr><th>網址列裡的</th><th>意思</th></tr>
+<tr><td><code>C:</code></td><td>C 槽，就是剛剛那個名字後面有 (C:) 的磁碟</td></tr>
+<tr><td><code>Users</code></td><td>就是「<b>使用者</b>」資料夾。畫面上顯示中文，完整地址裡是英文，<b>是同一個資料夾</b></td></tr>
+<tr><td><code>carme</code></td><td>家目錄<b>真正的名字</b>。這裡是手冊作者的，<b>你的會不一樣</b></td></tr>
+</table></div>
+<div class="tip">為什麼作者的資料夾叫 <code>carme</code>，不是完整的名字？安裝 Windows 時用微軟帳號（Email）登入的話，Windows 會拿 Email 的<b>前 5 個字元</b>當資料夾名稱。所以你的家目錄名稱可能是被截斷的、看起來很怪，這很正常。</div>
+<p>像這樣一層一層用 <code>\</code> 隔開的完整地址，叫做<b>路徑</b>。按 <code>Esc</code> 可以讓網址列變回原本的樣子。</p>
+
+<h3 id="L0-2-b">二、建立練習資料夾</h3>
+<ol>
+  <li>在家目錄的空白處按<b>滑鼠右鍵</b> →「新增」→「資料夾」。</li>
+  <li>取名 <code>ai-practice</code>，按 <code>Enter</code>。</li>
+</ol>
+<h4>釘選起來，以後在哪裡都找得到</h4>
+<ol>
+  <li>對 <code>ai-practice</code> 按<b>滑鼠右鍵</b> →「<b>釘選到 [快速存取]</b>」。</li>
+  <li>檔案總管左邊「<b>常用</b>」那一區就會出現 <code>ai-practice</code>。</li>
+</ol>
+<p>之後不管是檔案總管，還是 App 跳出來的「選資料夾」視窗，左邊的「常用」都會有它，點一下就到了。</p>
+
+<h4>為什麼放在家目錄，不放桌面或「文件」？</h4>
+<ul>
+  <li><b>獨立的資料夾最安全</b>：施工人員可以自由讀寫它的工作資料夾，放在獨立的地方，它就碰不到你其他的檔案。</li>
+  <li><b>很多電腦的桌面和「文件」有 OneDrive 同步</b>，路徑會變得很長，還可能跟雲端同步打架。放在家目錄下最單純。</li>
+</ul>
+
+<h3 id="L0-2-c">三、在資料夾裡建一個檔案</h3>
+<ol>
+  <li>雙擊進到 <code>ai-practice</code>。</li>
+  <li>空白處按右鍵 →「新增」→「文字文件」。</li>
+  <li>取名時<b>只打 <code>hello</code></b>，按 <code>Enter</code>。</li>
+  <li>雙擊打開，打「你好」，存檔（<code>Ctrl + S</code>），關掉記事本。</li>
+</ol>
+<div class="note"><b>不要打成 <code>hello.txt</code>。</b>Windows 預設會把檔名後面的 <code>.txt</code>（副檔名）藏起來，所以畫面上只看到 <code>hello</code>，實際檔名是 <code>hello.txt</code>。如果你取名時打了 <code>hello.txt</code>，實際會變成 <code>hello.txt.txt</code>，施工人員就找不到。</div>
+
+<h3 id="L0-2-d">四、兩個小技巧</h3>
+<h4>直接跳到家目錄</h4>
+<p>熟悉家目錄在哪之後，可以用這個捷徑：點一下網址列，貼上下面這串，按 <code>Enter</code>，就會直接跳到你的家目錄。</p>
+<div class="blk other"><div class="lbl">⌨️ 貼到檔案總管的網址列<button class="copy" type="button">複製</button></div><pre>%USERPROFILE%</pre></div>
+<h4>複製檔案的完整路徑</h4>
+<p>對檔案或資料夾按右鍵 →「<b>複製路徑</b>」（或選起來按 <code>Ctrl + Shift + C</code>），就會複製它的完整地址。要告訴施工人員某個檔案在哪裡時很好用。</p>
+
+<h3 id="L0-2-e">看懂「按鍵組合」的寫法</h3>
+<p>手冊裡寫 <code>Ctrl + S</code>、<code>Windows 鍵 + E</code>，意思是<b>按住前面那個鍵，再按後面那個鍵</b>，然後一起放開。不是把這幾個字打出來。</p>
+
+<h3>結訓考核</h3>
+<div class="table"><table>
+<tr><th>#</th><th>考核項目</th><th>怎麼考</th><th>合格標準</th></tr>
+<tr><td>T0-2-01</td><td>知道家目錄在哪</td><td>關掉檔案總管，重新打開，<b>不用 <code>%USERPROFILE%</code></b>，從「本機」一層一層點到家目錄</td><td>找得到 <code>ai-practice</code>；點網址列說得出自己家目錄的完整路徑</td></tr>
+<tr><td>T0-2-02</td><td>在別的視窗也找得到</td><td>在記事本按「檔案」→「開啟舊檔」</td><td>從左邊「常用」或一層一層找到 <code>ai-practice</code> 裡的 <code>hello</code>，打開內容是「你好」</td></tr>
+</table></div>
+</section>
+
+<!-- ===================== L0-3 ===================== -->
+<section class="lesson" id="L0-3" data-title="L0-3・裝好施工人員">
+<h2>L0-3・裝好你的施工人員</h2>
+<p class="subtitle">招聘準備第三課：安裝 Node.js 與 Antigravity 桌面 App</p>
+<p><b>Node.js</b> 是秘書上班要用的工作環境（L1 會用到），<b>Antigravity 桌面 App</b> 就是你的施工人員。</p>
+
+<h3 id="L0-3-a">開始前準備</h3>
+<ul>
+  <li>一個<b>個人</b> Google 帳號（Gmail）。公司或學校的帳號常會被擋，請用個人的。</li>
+  <li>年滿 18 歲（Google 的規定）。</li>
+  <li>L0-2 建好的 <code>ai-practice</code> 資料夾。</li>
+</ul>
+
+<h3 id="L0-3-b">步驟 1：安裝 Node.js</h3>
+<ol>
+  <li>前往 <a href="https://nodejs.org/" target="_blank" rel="noopener">Node.js 官網</a>，下載標示 <b>LTS</b> 的版本（長期支援版，最穩定）。Windows 選 <b>Windows Installer (.msi)</b>。</li>
+  <li>雙擊下載的檔案，<b>一路按 Next</b>，保留所有預設值：
+    <ul>
+      <li>授權條款頁要勾「I accept」才能繼續。</li>
+      <li>看到「Tools for Native Modules」的勾選框，<b>不用勾</b>。</li>
+      <li>Windows 跳出「是否允許此 App 變更你的裝置？」時，按「是」。</li>
+    </ul>
+  </li>
+  <li>按 <b>Finish</b> 完成。裝得對不對，步驟 5 會請施工人員幫你檢查。</li>
+</ol>
+
+<h3 id="L0-3-c">步驟 2：安裝 Antigravity 桌面 App</h3>
+<ol>
+  <li>前往 <a href="https://antigravity.google/download?os=windows" target="_blank" rel="noopener">Antigravity 下載頁</a>，下載 Windows 版的安裝檔。</li>
+  <li>雙擊安裝檔，照畫面完成安裝。</li>
+  <li>打開 Antigravity，照畫面用<b>個人 Google 帳號</b>登入（會開瀏覽器讓你授權）。</li>
+</ol>
+<div class="tip">如果出現設定精靈（選模式、主題等），可以按 <b>Not now</b> 跳過。下一步會直接到設定裡檢查最重要的幾項。</div>
+<p>右上角有一個「<b>Install IDE</b>」按鈕，那是給寫程式的人用的編輯器，<b>本課程不用裝</b>。</p>
+
+<h3 id="L0-3-d">步驟 3：檢查安全設定</h3>
+<p>按左下角的 <b>Settings</b>（齒輪圖示）。</p>
+<div class="table"><table>
+<tr><th>在哪裡</th><th>設定</th><th>要是什麼</th></tr>
+<tr><td>General</td><td><b>Security Preset</b></td><td><code>Default</code></td></tr>
+<tr><td>General</td><td>Plan Review Policy</td><td><code>Always Ask</code></td></tr>
+<tr><td>General → Tool Permissions</td><td>File Access Rules、Terminal Commands</td><td>清單是<b>空的</b>（不用新增任何東西）</td></tr>
+<tr><td>Application</td><td>Enable Remote Control</td><td><b>關閉</b>（從別的裝置遙控，用不到）</td></tr>
+</table></div>
+<p>Security Preset 的四個選項：</p>
+<div class="table"><table>
+<tr><th>選項</th><th>意思</th><th>本課程</th></tr>
+<tr><td><b>Default</b></td><td>執行指令一律要你同意；讀寫工作資料夾<b>以外</b>的檔案要你同意</td><td>✅ 用這個</td></tr>
+<tr><td>Full machine</td><td>指令還是要問，但<b>整台電腦的檔案</b>都能讀寫</td><td>⛔ 不要選</td></tr>
+<tr><td>Turbo mode</td><td>安全防護全部關掉</td><td>⛔ 不要選</td></tr>
+<tr><td>Custom</td><td>自己一項一項設定</td><td>不需要</td></tr>
+</table></div>
+<p>檢查完，按右上角的 ✕ 關掉設定。</p>
+
+<h3 id="L0-3-e">步驟 4：把 ai-practice 加進 Projects 清單</h3>
+<p>你要告訴 App：施工人員的<b>工作資料夾</b>是哪一個。App 畫面上的英文 <b>project</b>，指的就是工作資料夾；你加進來的工作資料夾，都會列在左邊的 <b>Projects 清單</b>。</p>
+<ol>
+  <li>左邊「<b>Projects</b>」這幾個字的右邊，有一個<b>資料夾＋號</b>的圖示，按下去。</li>
+  <li>會跳出一個標題是 <code>Open workspace</code> 的選資料夾視窗。它一開始可能停在「下載」或別的地方，不用管。</li>
+  <li>在視窗左邊的「<b>常用</b>」點 <code>ai-practice</code>（L0-2 釘選過的）。沒有的話，照 L0-2 的方法從左邊「本機」→ <code>(C:)</code> 的磁碟 →「使用者」→ 你的資料夾，一層一層找到它，點一下。</li>
+  <li>按「<b>選擇資料夾</b>」。</li>
+  <li>Projects 清單裡出現 <code>ai-practice</code>，就加好了。</li>
+</ol>
+
+<h3 id="L0-3-f">步驟 5：第一次上工</h3>
+<p><b>開對話一定要從工作資料夾開：</b>滑鼠移到 Projects 清單裡的 <code>ai-practice</code> 上，右邊會出現「<b>＋</b>」（提示文字 <code>New Conversation in Project</code>，意思是「在這個工作資料夾開新對話」），按它。</p>
+<div class="note">⚠️ <b>不要用左上角的「New Conversation」。</b>那個會開在工作資料夾外面，施工人員會跑到另一個暫存資料夾工作，找不到你的檔案。<br>
+<b>怎麼確認開對了</b>：對話上方的標題開頭是「<b>ai-practice /</b>」，左邊這段對話列在 <code>ai-practice</code> 底下。</div>
+<p>在對話框貼上，按 <code>Enter</code> 送出：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>你在哪個資料夾工作？請用繁體中文回答。</pre></div>
+<p>它應該回答 <code>…\ai-practice</code>。接著請它檢查 Node.js：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>執行 node -v，告訴我結果。</pre></div>
+<p>它要執行指令，會先問你（L0-4 會詳細教怎麼看）：</p>
+<div class="blk screen"><div class="lbl">👀 畫面會顯示</div><pre>Allow checking Node.js version?
+node -v
+1  Yes, allow this time
+2  Yes, and always allow 'node -v' in this conversation
+3  Yes, and always allow 'node -v' in this project
+4  Yes, and always allow 'node -v'
+5  No (tell the agent what to do instead)</pre></div>
+<p>選「<b>1. Yes, allow this time</b>」（這一次允許），按 <b>Submit</b>。它會告訴你版本，例如 <code>v24.13.1</code>。<b>v22.19 以上</b>就是 Node.js 裝好了。</p>
+
+<h3 id="L0-3-g">看懂主畫面</h3>
+<div class="table"><table>
+<tr><th>位置</th><th>是什麼</th></tr>
+<tr><td>左邊 Projects 清單</td><td>你加進來的工作資料夾，每個底下是在那裡開過的對話</td></tr>
+<tr><td>左邊 Conversations</td><td>開在工作資料夾<b>外面</b>的對話。不小心開到這裡的，不要繼續用</td></tr>
+<tr><td>對話上方的標題</td><td>「工作資料夾 / 對話名稱」。開頭沒有工作資料夾的名字，就是開錯地方了</td></tr>
+<tr><td>對話框下方 <code>Gemini 3.8 Flash High ▾</code></td><td>目前用的模型（大腦）。用預設的就好；額度用完時可以從這裡換一個</td></tr>
+</table></div>
+
+<h3>結訓考核</h3>
+<div class="table"><table>
+<tr><th>#</th><th>考核項目</th><th>怎麼考</th><th>合格標準</th></tr>
+<tr><td>T0-3-01</td><td>Node.js 裝好了</td><td>步驟 5 請它執行 <code>node -v</code></td><td>v22.19 以上</td></tr>
+<tr><td>T0-3-02</td><td>施工人員在對的地方</td><td>從 <code>ai-practice</code> 旁的「＋」開對話，問「你在哪個資料夾工作？」</td><td>標題開頭是「ai-practice /」；用繁體中文回答，提到 <code>ai-practice</code></td></tr>
+<tr><td>T0-3-03</td><td>安全設定正確</td><td>看 Settings → General</td><td>Security Preset 是 <code>Default</code></td></tr>
+<tr><td>T0-3-04</td><td>下次不用重登</td><td>關掉 App 再打開</td><td>直接可以對話，<code>ai-practice</code> 還在</td></tr>
+</table></div>
+
+<h3>Q&amp;A</h3>
+<p><b>Q：登入時說帳號不能用？</b><br>通常是公司或學校的帳號。請改用個人 Gmail。</p>
+<p><b>Q：可以換別的模型嗎？</b><br>可以，用對話框下方的模型選單。用預設的就夠了。不管用哪一家的模型，L0-1 講的資料規則都一樣：不要放機密。</p>
+</section>
+
+<!-- ===================== L0-4 ===================== -->
+<section class="lesson" id="L0-4" data-title="L0-4・第一次派工">
+<h2>L0-4・第一次派工</h2>
+<p class="subtitle">招聘準備第四課：交代小事、看懂它在做什麼</p>
+<p>這一課在 <code>ai-practice</code> 裡交代它幾件小事：讀檔、寫檔、改檔、跑指令。重點不是它做得多好，而是<b>你看得懂它每一次做了什麼、問了什麼</b>，也知道怎麼叫它停下、改回來。</p>
+
+<h3 id="L0-4-0">上工</h3>
+<p>滑鼠移到 Projects 清單裡的 <code>ai-practice</code> 上，按「＋」開新對話，確認標題開頭是「ai-practice /」。</p>
+
+<h3 id="L0-4-1">任務 1：讀檔（它不會問你）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>hello.txt 裡面寫了什麼？</pre></div>
+<p>它會直接打開 <code>hello.txt</code>，告訴你內容是「你好」。<b>它沒有問你就讀了</b>，因為：</p>
+<div class="key">📌 <b>工作資料夾裡的檔案，它可以自由讀取。</b>讀到的內容會送到 Google 的伺服器。不想被它看到的東西，就不要放進它工作的資料夾。</div>
+
+<h3 id="L0-4-2">任務 2：讀資料夾外面的檔案（它會問你）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>C:\Windows\win.ini 裡面寫了什麼？</pre></div>
+<p><code>win.ini</code> 是 Windows 內建的設定檔，沒有你的個人資料，拿來練習剛好。那是工作資料夾<b>外面</b>，它會先問你：</p>
+<div class="blk screen"><div class="lbl">👀 畫面會顯示</div><pre>Allow read access to this path?
+C:\Windows\win.ini
+1  Yes, allow this time
+2  Yes, and always allow in this conversation
+3  Yes, and always allow in this project
+4  Yes, and always allow
+5  No (tell the agent what to do instead)</pre></div>
+<p>這一次<b>選 5. No</b>，旁邊會出現輸入框，打「不允許」，按 <b>Submit</b>。它會回你「權限被拒絕，所以無法讀取」，不會想別的辦法偷偷讀。</p>
+
+<h3 id="L0-4-3">任務 3：建立新檔（它不會問，做完給你看）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>幫我建立一個 待辦.md，列出這週三件事：交季報、訂下週出差的高鐵票、回覆客戶報價。用勾選清單的格式。</pre></div>
+<p>它<b>不會先問你</b>，直接建好，然後在回覆最下面顯示：</p>
+<div class="blk screen"><div class="lbl">👀 畫面會顯示</div><pre>1 file changed  +7 -0                    Review</pre></div>
+<div class="table"><table>
+<tr><th>畫面上的</th><th>意思</th></tr>
+<tr><td><code>1 file changed</code></td><td>這一次改動了 <b>1 個</b>檔案</td></tr>
+<tr><td><code>+7</code>（綠色）</td><td>新增了幾行</td></tr>
+<tr><td><code>-0</code>（紅色）</td><td>刪除了幾行</td></tr>
+<tr><td><code>Review</code></td><td>打開來看改了哪些地方</td></tr>
+</table></div>
+<p>按 <b>Review</b>，右邊會打開一個面板：上方是檔名 <code>待辦.md</code>，下面是內容，<b>綠底的行就是新增的</b>。新檔案所以整片都是綠的。</p>
+<h4>自己確認</h4>
+<p>它說寫好了，不要只相信它說的。用檔案總管打開 <code>ai-practice</code>，雙擊 <code>待辦</code>（用記事本打開即可），確認三件事都在。</p>
+<div class="tip">用記事本打開會看到 <code>#</code>、<code>-</code>、<code>[ ]</code> 這些符號：這是 Markdown 格式，<code>#</code> 是標題、<code>-</code> 是清單、<code>[ ]</code> 是未勾選。之後秘書產出的文件大多是這種格式。</div>
+
+<h3 id="L0-4-4">任務 4：修改檔案（看懂改了哪裡）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>幫我改 hello.txt，在最後加一行「早安」。</pre></div>
+<p>一樣不會先問。做完按 <b>Review</b>：</p>
+<div class="blk screen"><div class="lbl">👀 Review 面板會顯示</div><pre>hello.txt                               +2 -1
+1  1  你好
+   2  早安        ← 這一行反白</pre></div>
+<p><b>反白的那一行就是新加的</b>。左邊兩排數字是修改前、修改後的行號。只要確認「它只改了你要它改的地方」就好。</p>
+
+<h4>改錯了怎麼辦</h4>
+<p><b>App 沒有「退回」按鈕。</b>Review 只能看，不能一鍵還原。改錯的話，直接跟它說：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>剛剛那個修改不對，請把 hello.txt 改回原來的樣子。</pre></div>
+<p>改完再用記事本打開確認，只剩「你好」。</p>
+<div class="note">📌 <b>這就是工作資料夾不能放重要檔案的原因</b>：它在工作資料夾裡建檔、改檔不會先問你，改錯了也沒有退回按鈕，只能靠它自己改回去。重要的檔案要練習，<b>先複製一份</b>進來再練。</div>
+
+<h3 id="L0-4-5">任務 5：執行指令（看不懂先問）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>用指令幫我查這個資料夾裡有哪些檔案，還有每個檔案多大。</pre></div>
+<p>它會停下來問你要不要執行：</p>
+<div class="blk screen"><div class="lbl">👀 畫面會顯示（指令可能不太一樣）</div><pre>Allow listing files in the folder?
+Get-ChildItem -File | Select-Object Name, Length
+1  Yes, allow this time
+2  Yes, and always allow 'Get-ChildItem …' in this conversation
+3  Yes, and always allow 'Get-ChildItem …' in this project
+4  Yes, and always allow 'Get-ChildItem …'
+5  No (tell the agent what to do instead)</pre></div>
+<div class="table"><table>
+<tr><th>畫面上的</th><th>意思</th></tr>
+<tr><td>第一行 <code>Allow …?</code></td><td>用白話說明它想做什麼</td></tr>
+<tr><td>第二行</td><td><b>它真正要執行的指令</b></td></tr>
+</table></div>
+<div class="table"><table>
+<tr><th>選項</th><th>意思</th><th>什麼時候選</th></tr>
+<tr><td><b>1. Yes, allow this time</b></td><td>這一次允許</td><td>✅ 看懂了、沒問題，<b>預設選這個</b></td></tr>
+<tr><td>2. … in this conversation</td><td>這段對話裡，同樣的指令都不再問</td><td>不需要</td></tr>
+<tr><td>3. … in this project</td><td>在這個工作資料夾裡，同樣的指令都不再問</td><td>只有「<b>只讀、不會改任何東西</b>」而且你看得懂的指令（例如 <code>node -v</code>）才可以選</td></tr>
+<tr><td>4. … always allow</td><td><b>所有工作資料夾</b>都不再問</td><td>⛔ 不要選</td></tr>
+<tr><td><b>5. No</b></td><td>不允許，旁邊可以打字告訴它</td><td>✅ 看不懂、覺得怪就選這個</td></tr>
+</table></div>
+<p><b>練習「看不懂先問」</b>：這一次選 <b>5. No</b>，在旁邊的輸入框打：</p>
+<div class="blk agent"><div class="lbl">💬 貼到「No」旁邊的輸入框<button class="copy" type="button">複製</button></div><pre>先不要執行。請告訴我這一行指令在做什麼？會不會改動或刪除任何東西？</pre></div>
+<p>按 <b>Submit</b>。聽懂了，再說「好，請執行」，它再問你時選 <b>1</b>。</p>
+<div class="tip">選了 No 的指令，在對話紀錄裡還是會顯示「<code>Ran command</code>」，看起來像執行過了。其實沒有，以你當時的選擇為準。</div>
+
+<h3 id="L0-4-6">任務 6：叫它停下、重做</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>寫一篇 2000 字的文章介紹台灣的夜市文化，存成 夜市.md。</pre></div>
+<p>送出後，趁它還在做的時候，按對話框右邊的<b>停止按鈕 ■</b>（原本是送出箭頭的位置）。它會立刻停下來。接著告訴它你要的：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>剛剛停掉了。改成 300 字就好，一樣存成 夜市.md。</pre></div>
+<div class="table"><table>
+<tr><th>狀況</th><th>怎麼做</th></tr>
+<tr><td>它做到一半，方向不對</td><td>按 ■ 叫停，再告訴它正確的做法</td></tr>
+<tr><td>它做完了，但你不滿意</td><td>直接說哪裡不對，例如「太長了，縮成三段」</td></tr>
+<tr><td>它改錯了檔案</td><td>叫它「改回原來的樣子」，再自己打開確認</td></tr>
+</table></div>
+
+<h3 id="L0-4-7">任務 7：換件事，開新對話</h3>
+<p>L0-1 說過：換一件事，就開一段新的對話（清桌面）。這個任務來體會「新對話不記得舊對話」。</p>
+<p><b>第 1 步</b>：在<b>現在這段對話</b>裡告訴它一件事：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>先記住一件事：我最喜歡的水果是芒果。只要記在這段對話裡，不用寫進任何檔案。</pre></div>
+<p><b>第 2 步</b>：滑鼠移到 Projects 清單裡的 <code>ai-practice</code> 上，按「<b>＋</b>」開一段<b>新對話</b>，問它：</p>
+<div class="blk agent"><div class="lbl">💬 貼到新對話的對話框<button class="copy" type="button">複製</button></div><pre>我最喜歡的水果是什麼？</pre></div>
+<p>它會說不知道，或請你告訴它。因為新對話是一張乾淨的桌面，舊對話裡講過的事都不在上面。</p>
+<div class="key">📌 <b>只有寫進檔案的東西才會留下來。</b>前面任務建的 <code>待辦.md</code>、<code>夜市.md</code> 都還在，新對話裡它也讀得到；但只在對話裡講過的事，換了對話就沒了。L1 的秘書也是這樣記事：你說「記下來」，他才會把事情寫進 <code>MEMORY.md</code> 這個檔案。</div>
+<div class="tip">如果它答得出「芒果」，按 Review 看看它是不是偷偷寫進了某個檔案（那就違反了「不用寫進檔案」）。</div>
+
+<h3 id="L0-4-8">對話框的 / 選單</h3>
+<p>在對話框打 <code>/</code> 會跳出一串功能。<b>L0 都用不到</b>，認得哪些不要碰就好：</p>
+<div class="table"><table>
+<tr><th>功能</th><th>意思</th><th>本課程</th></tr>
+<tr><td><code>plan</code></td><td>先列計畫，再動手</td><td>熟練以後再用</td></tr>
+<tr><td><code>btw</code></td><td>不打斷它的工作，順便問個問題</td><td>可以用</td></tr>
+<tr><td><code>goal</code></td><td>一直做到目標完成為止</td><td>⛔ 不要用：它停下來給你看的機會變少</td></tr>
+<tr><td><code>schedule</code></td><td>排程，定時自動執行</td><td>⛔ 不要用：你不在電腦前它也會動手</td></tr>
+<tr><td><code>browser</code></td><td>叫另一個 agent 開瀏覽器上網做事</td><td>⛔ 不要用</td></tr>
+</table></div>
+
+<h3 id="L0-4-9">權限速查表</h3>
+<div class="table"><table>
+<tr><th>它想做什麼</th><th>例子</th><th>它會先問你嗎？</th><th>你該怎麼做</th></tr>
+<tr><td>看工作資料夾裡的檔案</td><td>任務 1「hello.txt 裡面寫了什麼？」</td><td><b>不會</b></td><td>不想被看到的東西，就不要放進工作資料夾</td></tr>
+<tr><td>碰工作資料夾<b>外面</b>的檔案</td><td>任務 2「C:\Windows\win.ini 裡面寫了什麼？」</td><td><b>會</b></td><td>想一下它為什麼需要外面的東西；不需要就選 5. No</td></tr>
+<tr><td>在工作資料夾裡建檔、改檔</td><td>任務 3「幫我建立一個 待辦.md」</td><td><b>不會</b>，做完才顯示 <code>1 file changed</code></td><td>按 Review 看它改了什麼，再自己打開檔案檢查</td></tr>
+<tr><td>執行指令</td><td>任務 5「用指令幫我查這個資料夾裡有哪些檔案」</td><td><b>會</b></td><td>看得懂才選 1；看不懂就選 5. No，在旁邊直接問它</td></tr>
+</table></div>
+
+<h3>結訓考核</h3>
+<div class="table"><table>
+<tr><th>#</th><th>考核項目</th><th>怎麼考</th><th>合格標準</th></tr>
+<tr><td>T0-4-01</td><td>做完自己確認</td><td>任務 3</td><td>用 Review 和記事本確認過 <code>待辦.md</code> 的內容</td></tr>
+<tr><td>T0-4-02</td><td>改錯救得回來</td><td>任務 4</td><td>叫它改回去後，<code>hello.txt</code> 只剩「你好」</td></tr>
+<tr><td>T0-4-03</td><td>看不懂先問</td><td>任務 5</td><td>先選 No 並問清楚，再允許</td></tr>
+<tr><td>T0-4-04</td><td>叫得停</td><td>任務 6</td><td>用 ■ 叫停，並讓它照新要求重做</td></tr>
+<tr><td>T0-4-05</td><td>分得清會不會問</td><td>任務 1～5 做完後，說出哪些它會問、哪些不會</td><td>講得出「指令和資料夾外會問；資料夾裡讀寫不問」</td></tr>
+<tr><td>T0-4-06</td><td>新對話不記得舊對話</td><td>任務 7</td><td>新對話答不出「芒果」；說得出「只有寫進檔案的才會留下來」</td></tr>
+</table></div>
+
+<h3>Q&amp;A</h3>
+<p><b>Q：它說找不到 hello.txt，還想執行指令去搜尋？</b><br>九成是對話開在工作資料夾外面了。看標題開頭有沒有「ai-practice /」。沒有的話，這段對話不要用了，從 <code>ai-practice</code> 旁的「＋」重開一段。</p>
+<p><b>Q：在對話框打 <code>@</code>，想選檔案卻只出現別的東西？</b><br>這個 App 的 <code>@</code> 不能選檔案。要它讀哪個檔，直接打檔名，例如「請讀 hello.txt」。</p>
+<p><b>Q：它一直用英文回答？</b><br>跟它說「以後都用繁體中文回答」。開新對話後如果又變回英文，再說一次。</p>
+<p><b>Q：它的回答裡有 <code>**</code> 之類的符號？</b><br>那是它的粗體格式沒有顯示好，不影響內容。</p>
+<p><b>Q：對話上方的「Worked for 3m」是它做了 3 分鐘嗎？</b><br>不一定。這個時間包括它等你按允許的時間。</p>
+</section>
+
+<!-- ===================== L0-5 ===================== -->
+<section class="lesson" id="L0-5" data-title="L0-5・照工單施工">
+<h2>L0-5・照工單施工</h2>
+<p class="subtitle">招聘準備第五課：交出第一張工單＋結業</p>
+<p>從 L1 開始，每一課你都會拿到一份《施工工單》，把它交給施工人員，他照著做。這一課先用一張 15 分鐘做得完的<b>迷你工單</b>練一次：整理一份會議紀錄。最後替秘書申請好 Gemini API Key，L0 就結業了。</p>
+
+<h3 id="L0-5-a">一、工單是什麼</h3>
+<p><b>工單是寫給施工人員看的完整說明書。</b>你不用看懂每一行。你在工單裡的身分叫<b>委託人</b>，要做的只有四件事：</p>
+<ol>
+  <li><b>交出工單</b></li>
+  <li><b>回答它的問題</b></li>
+  <li><b>簽核</b>：它開工前會給你一張確認單，你看過沒問題才回「同意」</li>
+  <li><b>驗收</b>：它說做完了，你自己打開成品檢查</li>
+</ol>
+<div class="key">📌 桌面 App 建檔、改檔不會先問你，所以<b>「簽核」是你唯一的事前把關</b>，「驗收」是事後把關。兩關都要確實做。</div>
+
+<h3 id="L0-5-b">二、交出迷你工單</h3>
+<h4>步驟 1：把工單放進 ai-practice</h4>
+<p>從課程教材裡找到《<code>L0-5_會議紀錄_迷你工單.md</code>》，複製到 <code>ai-practice</code> 資料夾。</p>
+<h4>步驟 2：開新對話，交出工單</h4>
+<p>從 <code>ai-practice</code> 的「＋」開新對話，然後說：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>請先完整讀過目前資料夾裡的 L0-5_會議紀錄_迷你工單.md，照這份工單幫我施工。</pre></div>
+<h4>步驟 3：回答它的問題</h4>
+<p>工單規定它要先問你兩題，然後<b>停下來等你回答</b>：</p>
+<div class="table"><table>
+<tr><th>它會問</th><th>你怎麼答</th></tr>
+<tr><td>這場會議是哪一天開的？</td><td>隨便給一個日期，例如「2026 年 9 月 22 日」</td></tr>
+<tr><td>記錄人要寫誰的名字？</td><td>你的名字；不想寫可以說「不用」</td></tr>
+</table></div>
+<p>如果它沒問就自己填了日期，那是違反工單紀律，按 ■ 停下來，說「工單規定要先問我日期，請重來」。</p>
+<h4>步驟 4：簽核《開工確認》</h4>
+<div class="blk screen"><div class="lbl">👀 畫面會顯示（大致像這樣）</div><pre>《開工確認》
+要建立的檔案：會議紀錄_2026-09-22_展場攤位.md
+位置：目前的工作資料夾
+會議日期：2026-09-22
+記錄人：（你的名字）
+內容：討論重點、決議、待辦（共 3 項）、待確認事項
+不會做的事：不改其他檔案、不執行任何指令
+請回覆「同意」開工，或告訴我要改哪裡。</pre></div>
+<p>看過檔名、日期沒錯，回「<b>同意</b>」。它在你回「同意」之前就建了檔案的話，一樣是違反紀律。</p>
+<div class="tip">這張工單寫明「不執行任何指令」。如果它問你要不要執行指令，選 <b>5. No</b>，旁邊打「工單規定不執行指令」。</div>
+<h4>步驟 5：看《完成回報》</h4>
+<p>它做完會交一份回報，列出自我檢查的結果。</p>
+
+<h3 id="L0-5-c">三、驗收：你自己檢查</h3>
+<p><b>不要只看它的回報。</b>按 Review 看內容，或用記事本打開檔案，對照下表：</p>
+<div class="table"><table>
+<tr><th>#</th><th>檢查項目</th><th>正確答案</th></tr>
+<tr><td>1</td><td>檔名</td><td><code>會議紀錄_你給的日期_展場攤位.md</code>，日期是你說的，不是今天</td></tr>
+<tr><td>2</td><td>四段都有</td><td>討論重點、決議、待辦、待確認</td></tr>
+<tr><td>3</td><td>待辦有三項</td><td>交設計稿（小李，10/10）、聯絡印刷廠並比兩家價格（小王，未指定）、換運輸廠商（阿明，未指定）</td></tr>
+<tr><td>4</td><td><b>沒有亂填期限</b></td><td>小王、阿明的期限都是「（未指定）」，<b>不是 10/15</b></td></tr>
+<tr><td>5</td><td>決議</td><td>預算上限 30 萬、攤位最晚 10/15 定案</td></tr>
+<tr><td>6</td><td>待確認</td><td>小王、阿明的期限；下次開會的日期</td></tr>
+<tr><td>7</td><td>沒有多做</td><td>資料夾裡除了這份會議紀錄，其他檔案都沒被改</td></tr>
+</table></div>
+<p>第 4 項是 AI 最常犯的錯：筆記裡有「10/15 定案」，它很容易拿來當別人的期限。<b>最後把關的是你。</b>有錯就直接告訴它哪裡不對，例如「小王那項原文沒有期限，請改成（未指定）」。</p>
+
+<h3 id="L0-5-d">四、申請 Gemini API Key</h3>
+<p>施工人員用你的 Google 帳號登入；<b>秘書是在背景跑的程式，要用 API Key</b>（L0-1 第四節）。</p>
+<ol>
+  <li>前往 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio 的 API Keys 頁面</a>，用<b>個人 Google 帳號</b>登入。</li>
+  <li>第一次使用會請你同意服務條款。同意後通常會<b>自動建好一把金鑰</b>。</li>
+  <li>沒有看到金鑰的話，按「<b>Create API key</b>」建立一把。</li>
+  <li>按複製，存到安全的地方（見下表）。</li>
+</ol>
+<p>免費方案<b>不用綁信用卡</b>，額度夠你在 L1 試用秘書。</p>
+<div class="table"><table>
+<tr><th>✅ 可以</th><th>⛔ 不可以</th></tr>
+<tr><td>存進<b>密碼管理工具</b>（瀏覽器或手機內建的密碼管理）</td><td><b>貼進施工人員的對話框</b>：對話內容會送到雲端</td></tr>
+<tr><td>暫時不存也行：L1 要用時，再回 AI Studio 建一把新的</td><td><b>存在 <code>ai-practice</code> 資料夾裡</b>：施工人員可以自由讀取那裡的檔案</td></tr>
+<tr><td></td><td>截圖、傳 LINE、貼到群組或筆記 App</td></tr>
+</table></div>
+<p><b>萬一外流了</b>：回到同一個 AI Studio 頁面，先建一把新的，再把舊的刪掉。</p>
+<p>施工人員（Google 帳號）和秘書（API Key）的額度<b>各算各的</b>，一邊用完不影響另一邊。</p>
+
+<h3>結訓考核（L0 結業）</h3>
+<div class="table"><table>
+<tr><th>#</th><th>考核項目</th><th>怎麼考</th><th>合格標準</th></tr>
+<tr><td>T0-5-01</td><td>它有照紀律</td><td>步驟 3、4</td><td>先問你日期、先給《開工確認》，得到「同意」才建檔</td></tr>
+<tr><td>T0-5-02</td><td>成品合格</td><td>第三節驗收表</td><td>七項全部正確（有錯叫它改到正確也算通過）</td></tr>
+<tr><td>T0-5-03</td><td>回報屬實</td><td>對照《完成回報》和你的驗收結果</td><td>它打勾的項目，你檢查也是對的</td></tr>
+<tr><td>T0-5-04</td><td>金鑰就緒</td><td>第四節</td><td>已申請；存在安全的地方，<b>不在 <code>ai-practice</code> 裡、沒貼進任何對話</b></td></tr>
+</table></div>
+<div class="key">🎓 <b>L0 招聘準備結業。</b>你已經有一位會用的施工人員，也有秘書的大腦通行證了。下一步：L1 到職。<br>
+L1 的秘書要用 <b>Telegram</b> 跟你聯絡。還沒有的話，可以先在手機和電腦都裝好（L1 第二章「準備三」）。</div>
+</section>
+
+<!-- ===================== L1 ===================== -->
+<section class="lesson" id="L1" data-title="L1・到職">
+<h2>L1・到職</h2>
+<p class="subtitle">替自己招一位 AI 秘書</p>
+<p>你不用會寫程式。你要做的事，跟招一位新秘書差不多：先面談、幫他辦報到、讓他試用、合格了再轉正。真正動手寫程式的，是施工人員照《施工工單》做。</p>
+
+<div class="blk screen"><div class="lbl">👀 這堂課結束，你的手機 Telegram 會長這樣</div><pre>你       09:12  你是誰？
+Melo     09:12  我是 Melo，你的私人秘書。有事交代就說，我會盡量一次講清楚。
+你       09:13  記下來：我每週一早上九點開部門會議
+Melo     09:13  好，已經記在我的人事資料裡了。下次重新上班之後就會記得。</pre></div>
+<p>他會<b>認得你</b>、<b>有自己的個性</b>、<b>有辦公桌</b>（能在自己的資料夾裡讀寫檔、執行指令）、<b>只聽你的</b>、<b>你說「記下來」才記</b>。跨天記得聊過什麼、看行事曆、擬信、主動提醒，之後的課程會教。</p>
+<p>秘書在<b>你的電腦</b>上班，用網路連到 Google Gemini（大腦）和 Telegram（手機）。不用租雲端主機，代價是：<b>電腦要開著、不能睡眠，他才能回你訊息。</b>平台：Windows 10／11 已完整驗證；macOS 驗證中；Linux 不支援。</p>
+
+<h3 id="L1-1">第一章・面談準備</h3>
+<p>施工人員開工前會先面談你九個問題。<b>先把答案想好</b>，面談時直接貼上最快。不回答的題目會用預設值。</p>
+<div class="table"><table>
+<tr><th>問題</th><th>會寫進</th><th>不回答的話</th></tr>
+<tr><td>秘書要裝在哪個資料夾？（它可能會說「專案」，意思一樣）</td><td>—</td><td>家目錄下的 <code>ai-secretary</code></td></tr>
+<tr><td>他叫什麼名字？</td><td><code>SOUL.md</code></td><td>Melo</td></tr>
+<tr><td>他的職務？（例：私人秘書、業務助理、學習夥伴）</td><td><code>SOUL.md</code></td><td>私人秘書</td></tr>
+<tr><td>他的個性和說話方式？</td><td><code>SOUL.md</code></td><td>簡潔直接，不繞圈</td></tr>
+<tr><td>他一定要守的規矩？</td><td><code>SOUL.md</code></td><td>不懂就說不懂，不胡說</td></tr>
+<tr><td>他該怎麼稱呼你？</td><td><code>MEMORY.md</code></td><td>你</td></tr>
+<tr><td>簡單說你是誰、在做什麼？</td><td><code>MEMORY.md</code></td><td>（未提供）</td></tr>
+<tr><td>你希望他特別注意什麼？</td><td><code>MEMORY.md</code></td><td>（未提供）</td></tr>
+<tr><td>還有其他想讓他記住的事嗎？</td><td><code>MEMORY.md</code></td><td>（無）</td></tr>
+</table></div>
+<p>可以先在記事本寫好像這樣的答案，面談時整段貼上（<b>不用寫題號</b>，它的編號可能跟這裡不一樣）：</p>
+<div class="blk agent"><div class="lbl">💬 面談時貼到 Antigravity 對話框（先改成你的答案）<button class="copy" type="button">複製</button></div><pre>安裝位置：用預設
+名字：Melo
+職務：私人秘書
+個性：簡潔直接，不繞圈
+規矩：不懂就說不懂，不胡說
+稱呼：老闆
+我是誰：我在一家公司做業務，常要整理會議紀錄
+注意事項：一律用繁體中文
+其他：無</pre></div>
+<ul>
+  <li><b>不要寫密碼、身分證字號、銀行帳號</b>。這些資料會送到 Google 的伺服器。</li>
+  <li>答案之後都能改。人事資料就是兩個文字檔，用記事本打開就能編輯。</li>
+</ul>
+
+<h3 id="L1-2">第二章・報到準備</h3>
+<p>秘書報到前，要幫他準備好這幾樣東西。</p>
+<h4>準備一：一台會開著的電腦，裝好 Node.js</h4>
+<p>L0-3 已經裝好了（v22.19 以上）。</p>
+<h4>準備二：Gemini API Key</h4>
+<p>L0-5 已經申請好了。</p>
+<h4>準備三：安裝 Telegram（手機＋電腦）</h4>
+<ol>
+  <li><b>手機</b>：到 App Store 或 Google Play 安裝 <b>Telegram</b>，用手機號碼註冊。之後跟秘書對話都用手機。</li>
+  <li><b>電腦</b>：也登入 Telegram，下一步跟 BotFather 拿 Token 要在電腦上做，複製貼上才方便。二選一：
+    <ul>
+      <li>安裝 <b>Telegram Desktop</b>（<a href="https://telegram.org/" target="_blank" rel="noopener">telegram.org</a>）</li>
+      <li>用瀏覽器打開 <b>Telegram Web</b>（<a href="https://web.telegram.org/" target="_blank" rel="noopener">web.telegram.org</a>），用手機 Telegram 掃 QR Code 登入</li>
+    </ul>
+  </li>
+</ol>
+<div class="note">⚠️ 不要在手機上拿 Token 再用 LINE、Email 傳給自己，那樣等於外流。</div>
+<h4>準備四：秘書的手機號碼（Telegram Bot）</h4>
+<p>在<b>電腦</b>的 Telegram 操作：</p>
+<ol>
+  <li>上方搜尋欄打 <b><code>@BotFather</code></b>（名字旁邊有藍色勾勾的才是官方的），點進去，按 Start。</li>
+  <li>傳 <code>/newbot</code>。它會先問<b>顯示名稱</b>（中英文都可以，例如「我的秘書」），再問<b>帳號名稱</b>（只能用英文、數字、底線，<b>結尾一定要是 <code>bot</code></b>，例如 <code>carme_secretary_bot</code>；被用過的話換一個）。</li>
+  <li>建好後會出現一張卡片：大頭貼、名字、名字下面一行灰色的 <code>@你的bot名稱</code>，還有一條 🔑 被遮住的 <b>Token</b>。</li>
+</ol>
+<div class="table"><table>
+<tr><th>卡片上的</th><th>怎麼做</th></tr>
+<tr><td>藍色 <b>Copy</b></td><td>按它複製 Token，存到密碼管理工具。Token 跟金鑰一樣重要</td></tr>
+<tr><td>紅色 <b>Revoke</b></td><td>⛔ <b>不要按</b>：Token 會作廢，要重新拿一個</td></tr>
+<tr><td>名字下面灰色的 <b><code>@你的bot名稱</code></b></td><td><b>按它</b>，就會打開跟你的秘書 Bot 的對話</td></tr>
+</table></div>
+<ol start="4">
+  <li>在秘書 Bot 的對話裡<b>按 Start，再隨便傳一句話</b>（例如「hi」）。</li>
+</ol>
+<div class="tip">找不到那行灰色的 @ 名稱？在 Telegram 上方的搜尋欄打 <code>@你的bot名稱</code>，一樣找得到。</div>
+<h4>準備五：查出你自己的 User ID</h4>
+<p>這是秘書用來認主人的號碼。這一步要用一次 <b>PowerShell</b>（Windows 用打字操作電腦的視窗）：</p>
+<ol>
+  <li>按鍵盤的 <b>Windows 鍵</b>，打 <code>powershell</code>，點「<b>Windows PowerShell</b>」。<b>不要選「以系統管理員身分執行」。</b></li>
+  <li>先在記事本把下面這行的 <code>你的Token</code> 換成真的 Token（引號要留著），再整行複製。</li>
+  <li>在 PowerShell 視窗裡按<b>滑鼠右鍵</b>就會貼上，按 <code>Enter</code>。</li>
+</ol>
+<div class="blk other"><div class="lbl">⌨️ 貼到 PowerShell（先把「你的Token」換掉）<button class="copy" type="button">複製</button></div><pre>$token = "你的Token"; (Invoke-RestMethod "https://api.telegram.org/bot$token/getUpdates").result | ForEach-Object { [PSCustomObject]@{ Id = $_.message.from.id; Name = $_.message.from.first_name } }</pre></div>
+<p>畫面會出現一串數字和你的名字，那串數字就是你的 User ID，記下來。</p>
+<ul>
+  <li><b>什麼都沒出現？</b>代表準備四的第 4 步還沒做。回 Telegram 對 Bot 傳一句話，再按鍵盤 <code>↑</code> 叫回剛剛那行，按 <code>Enter</code>。</li>
+  <li><b>出現紅字「未預期的 '(' 語彙基元」？</b>貼上時斷成兩行了。重新整行複製再貼一次。</li>
+  <li><b>不要把 Token 貼進施工人員的對話框</b>請它幫你查，Token 跟金鑰一樣不能進對話。</li>
+</ul>
+
+<h3 id="L1-3">第三章・到職手續</h3>
+<h4>步驟 1：準備秘書的辦公室</h4>
+<ol>
+  <li>照 L0-2 的做法，用檔案總管進到你的家目錄，建一個空的資料夾 <code>ai-secretary</code>，再對它按右鍵「<b>釘選到 [快速存取]</b>」。這就是秘書的工作資料夾。</li>
+  <li>把《<code>L1_到職篇_施工工單.md</code>》複製進去。</li>
+  <li>用記事本打開工單，看開頭表格的「<b>版次</b>」，要是 <b>V1.5</b> 或更新。舊版的工單會讓施工人員多做很多不必要的事。</li>
+  <li>照 L0-3 步驟 4，把 <code>ai-secretary</code> 加進 Antigravity 的 Projects 清單（<code>Open workspace</code> 視窗左邊的「常用」點 <code>ai-secretary</code> → 選擇資料夾）。</li>
+  <li>滑鼠移到 Projects 清單裡的 <code>ai-secretary</code> 上，按「＋」開新對話，確認標題開頭是「<b>ai-secretary /</b>」。</li>
+</ol>
+<h4>步驟 2：交出工單</h4>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy" type="button">複製</button></div><pre>請先完整讀過目前資料夾裡的 L1_到職篇_施工工單.md，照這份工單幫我建置。</pre></div>
+<p>一開始它會查電腦環境（作業系統、Node.js 版本），會問你要不要執行 <code>node --version</code> 這類指令。這些只是查版本，選 <b>1</b> 就好。</p>
+<h4>步驟 3：接受面談</h4>
+<p>它會一次問完第一章的九題。把準備好的答案貼上。如果它沒問就自己填了名字或背景，<b>按 ■ 叫它停下來重新問</b>。</p>
+<h4>步驟 4：簽核《到職確認單》</h4>
+<p>它會整理一張確認單：安裝位置、秘書的人設、你的資料，還有一行「<b>工程自檢：self-check.mjs＋品檢/L1.mjs……只執行 node self-check.mjs 一行</b>」。都沒錯再回「<b>同意</b>」。</p>
+<h4>步驟 5：施工中，它會問你的事</h4>
+<p>它會建立十幾個檔案（不會問你），中間有幾次要執行指令會問你：</p>
+<div class="table"><table>
+<tr><th>它要執行的</th><th>怎麼選</th></tr>
+<tr><td><code>node --version</code>、<code>npm --version</code> 之類查版本的</td><td>1</td></tr>
+<tr><td><code>npm install</code>（安裝秘書要用的套件）</td><td>1</td></tr>
+<tr><td><code>node self-check.mjs</code>（工程自檢，用假金鑰，大約 2 分鐘）</td><td>1，然後等它跑完</td></tr>
+<tr><td><code>npm start</code>、<code>node --env-file=.env bridge.mjs</code></td><td>⛔ <b>5. No</b>，旁邊打「工單規定自檢不准用 .env 啟動」</td></tr>
+<tr><td>執行它自己寫的腳本，例如 <code>node "…\scratch\test-q03.mjs"</code>、<code>check-….mjs</code></td><td>⛔ <b>5. No</b>，旁邊打「工單規定只准執行 node self-check.mjs」</td></tr>
+</table></div>
+<div class="note">⚠️ <b>它連續違反工單兩次，就按 ■ 停掉</b>，從 <code>ai-secretary</code> 的「＋」開一段新對話，重新交工單。同一段對話裡它一旦偏掉，常常越糾正越亂。</div>
+<h4>步驟 6：填寫通行證</h4>
+<p>施工完成後，它會請你把金鑰填進 <code>ai-secretary</code> 裡的 <b><code>.env</code></b> 檔：</p>
+<ol>
+  <li>用檔案總管打開 <code>ai-secretary</code>，找到 <code>.env</code>。</li>
+  <li>在它上面按右鍵 →「開啟檔案」或「開啟方式」→ 選<b>記事本</b>。</li>
+  <li>在三個等號後面填上你的值，存檔：</li>
+</ol>
+<div class="blk screen"><div class="lbl">👀 記事本裡的 .env（照格式填，不用複製）</div><pre>GEMINI_API_KEY=你的Gemini金鑰
+TELEGRAM_BOT_TOKEN=你的BotToken
+TELEGRAM_ALLOWED_USERS=你的UserID</pre></div>
+<div class="note">⚠️ <b>一定要填在 <code>.env</code>，不是 <code>.env.example</code></b>。<code>.env.example</code> 是空白範本，之後可能會被上傳到網路。兩個檔名很像，填錯檔是最常見的錯誤。<br><b>金鑰只填進記事本，不要貼進對話框。</b>填好後回對話框說「填好了」即可。</div>
+<h4>步驟 7：驗收它的交貨報告</h4>
+<p>它最後會交一份交貨報告。不要只看它寫「全部通過」，自己檢查這三件事：</p>
+<div class="table"><table>
+<tr><th>#</th><th>檢查</th><th>怎麼看</th></tr>
+<tr><td>1</td><td>自檢真的有跑</td><td>報告裡有一行原文「<code>自檢結束：✅ 11　❌ 0　👀 1</code>」這樣的字（數字可能不同，❌ 要是 0）。<b>沒有這一行，就是沒跑</b>，請它照工單執行 <code>node self-check.mjs</code></td></tr>
+<tr><td>2</td><td>自檢檔在 ai-secretary 裡</td><td>檔案總管裡 <code>ai-secretary</code> 有 <code>self-check.mjs</code> 和 <code>品檢</code> 資料夾</td></tr>
+<tr><td>3</td><td>人事資料是你的</td><td>用記事本打開 <code>SOUL.md</code>、<code>MEMORY.md</code>，名字、稱呼跟你面談的答案一樣</td></tr>
+</table></div>
+<h4>步驟 8：第一天上班</h4>
+<p>到 <code>ai-secretary</code> 資料夾，<b>雙擊 <code>啟動 Agent.bat</code></b>。跳出黑色視窗，看到這兩行就是上班了：</p>
+<div class="blk screen"><div class="lbl">👀 黑色視窗會顯示</div><pre>Agent 已啟動，模型 google/gemini-3.5-flash-lite（思考等級: medium），工具：…
+等待 Telegram 訊息…</pre></div>
+<p><b>這個視窗不要關</b>。關掉就是下班。</p>
+
+<h3 id="L1-4">第四章・試用期考核</h3>
+<p>試用期用 Gemini 免費額度，不花一毛錢。用手機逐項考核，全部通過才轉正。</p>
+<div class="table"><table>
+<tr><th>#</th><th>考核項目</th><th>怎麼考</th><th>合格標準</th></tr>
+<tr><td>1</td><td>認得自己</td><td>傳「你是誰？」</td><td>名字、職務、個性跟面談的答案一致</td></tr>
+<tr><td>2</td><td>認得老闆</td><td>傳「我是誰？」</td><td>稱呼、背景、注意事項跟面談的答案一致</td></tr>
+<tr><td>3</td><td>會看文件</td><td>傳「把 SOUL.md 第一行唸給我」</td><td>內容跟檔案一致</td></tr>
+<tr><td>4</td><td>交代的事會記</td><td>傳「記下來：我週三晚上不回訊息」→ <b>關掉黑視窗、重新雙擊啟動</b> → 傳「我週三晚上怎樣？」</td><td>重新上班後答得出來</td></tr>
+<tr><td>5</td><td>不會自作主張</td><td>隨便聊幾句，<b>不要</b>說「記下來」</td><td>打開 <code>MEMORY.md</code>，內容沒被改動</td></tr>
+<tr><td>6</td><td>只聽老闆的</td><td>用另一個 Telegram 帳號傳訊息給他</td><td>完全沒回應；黑視窗印出「忽略非白名單使用者」</td></tr>
+<tr><td>7</td><td>看得出他在忙</td><td>傳「幫我寫一段 300 字的自我介紹」</td><td>回覆出來之前，對話視窗上方顯示「輸入中…」</td></tr>
+</table></div>
+<p>免費額度大約是<b>每分鐘 15 次、每天 500 次</b>（以 <a href="https://ai.google.dev/gemini-api/docs/rate-limits" target="_blank" rel="noopener">Google 官方公告</a>為準）。真的超過時，他會回「額度或速率上限可能已到」，這不是壞掉。<b>建議試用 3 到 7 天</b>，確定他適合你再轉正。</p>
+
+<h3 id="L1-5">第五章・轉正</h3>
+<p><b>什麼時候轉正</b>：考核都通過，<b>而且</b>常常看到「額度已到」，或你打算每天靠他辦事。</p>
+<ol>
+  <li>到 <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Google AI Studio</a> 開通計費（綁信用卡）。</li>
+  <li><b>馬上設定預算上限和用量警示</b>（例如每月 5 美元）。</li>
+  <li>完成。<b>程式、<code>.env</code>、金鑰通通不用改</b>，同一把金鑰的額度會自動提高。</li>
+</ol>
+<p>一個人日常使用，一個月大約是幾十元台幣的等級，以 Google 帳單為準。依 Google 的條款，免費層的對話內容可能被用來改善 Google 的產品，付費層則不會。如果你會跟秘書討論公司業務，轉正也是保護資料的一步。</p>
+
+<h3 id="L1-6">第六章・日常管理</h3>
+<div class="table"><table>
+<tr><th>動作</th><th>怎麼做</th></tr>
+<tr><td>上班</td><td>雙擊 <code>啟動 Agent.bat</code></td></tr>
+<tr><td>下班</td><td>關掉黑色視窗，或在視窗裡按 <code>Ctrl + C</code></td></tr>
+<tr><td>重新上班（重啟）</td><td>先下班，再上班</td></tr>
+</table></div>
+<ul>
+  <li><b>同一時間只能開一個黑視窗。</b>開兩個會互搶訊息，視窗裡會出現 <code>Conflict</code> 錯誤。</li>
+  <li>叫他「記下來」之後、自己改了 <code>SOUL.md</code> 或 <code>MEMORY.md</code> 之後，都要<b>重啟</b>才會生效。改人事資料時<b>章節標題不要刪</b>，只改內容。</li>
+</ul>
+<h4>讓他只聽你的</h4>
+<p>程式裡已經有白名單，只有 <code>.env</code> 裡的 User ID 能跟他說話。在 Telegram 再多鎖一道：</p>
+<ol>
+  <li>對 <code>@BotFather</code> 傳 <code>/setjoingroups</code>，選你的 Bot，選 <b>Disable</b>（不能被拉進群組）。</li>
+  <li>傳 <code>/setprivacy</code>，選你的 Bot，選 <b>Enable</b>。</li>
+  <li><b>不要公開你的 Bot 帳號名稱。</b>他能在你電腦上執行指令，能跟他說話的人，某種程度上就能操作你的電腦。</li>
+</ol>
+<h4>金鑰外洩了怎麼辦</h4>
+<ul>
+  <li><b>Telegram Token</b>：對 <code>@BotFather</code> 傳 <code>/revoke</code>，選你的 Bot，拿新 Token 換進 <code>.env</code>，重啟。</li>
+  <li><b>Gemini 金鑰</b>：到 AI Studio 刪掉舊金鑰、建新的，換進 <code>.env</code>，重啟。</li>
+</ul>
+
+<h3 id="L1-q">Q&amp;A</h3>
+<p><b>Q：啟動時說「找不到 GEMINI_API_KEY」或「.env: not found」？</b><br>你可能把金鑰填進了 <code>.env.example</code>。確認資料夾裡有一個叫 <code>.env</code> 的檔案，金鑰要填在那裡。</p>
+<p><b>Q：黑視窗一直跳「Conflict: terminated by other getUpdates request」？</b><br>有兩個秘書同時在上班。把所有黑視窗都關掉，只開一個。</p>
+<p><b>Q：雙擊 <code>啟動 Agent.bat</code> 後視窗一閃就不見？</b><br>通常是這個檔案被人用記事本改過。請施工人員照工單重新建立這個檔案，不要自己修改它。</p>
+<p><b>Q：手機傳訊息，他都不回？</b><br>依序檢查：① 電腦是不是睡著了？② 黑視窗還開著嗎？③ 黑視窗有沒有紅字錯誤？</p>
+<p><b>Q：黑視窗偶爾出現「輪詢錯誤：fetch failed」？</b><br>網路短暫不穩，程式會自己重試，送不出去的回覆會在網路恢復後補送。一直出現才需要檢查網路。</p>
+<p><b>Q：筆電闔上就不回了？</b><br>Windows 到「電源選項」把「闔上蓋子時」改成「不執行任何動作」。</p>
+<p><b>Q：他忘了剛剛聊過的事？</b><br>重啟過就會忘，這是 L1 的設計。他只記得人事資料裡寫的東西。跨天的記憶在 L2 教。</p>
+<p><b>Q：交貨報告叫我用 <code>@userinfobot</code> 查 User ID？</b><br>那是第三方的 Bot，本課程不用。照第二章「準備五」查就好。</p>
+
+<h3 id="L1-next">下一步</h3>
+<p>這位秘書會跟著你一路升級，<b>人事資料（<code>SOUL.md</code>／<code>MEMORY.md</code>）會一直沿用</b>。</p>
+<div class="table"><table>
+<tr><th>課程</th><th>他的成長</th></tr>
+<tr><td><b>L1・到職</b>（本課）</td><td>有個性、認得你、只聽你的</td></tr>
+<tr><td>L2・在職訓練</td><td>重啟不失憶、跨天記得、工作日誌、專業技能包、叫得停、學會你的做法、存檔與備份</td></tr>
+<tr><td>L3・授權配發</td><td>Office 文件、地圖、行事曆、Gmail；權限分三級：查閱／擬稿／執行</td></tr>
+<tr><td>L4・主動工作</td><td>晨間簡報、會議前提醒、固定排程</td></tr>
+<tr><td>L5・組建團隊</td><td>業務、研發、廠務各有專屬助理，分工合作</td></tr>
+</table></div>
+</section>
+
+</main>
+</div>
+
+<script>
+(function(){
+  // 側欄目錄
+  const nav = document.getElementById("nav");
+  document.querySelectorAll("section.lesson").forEach(s => {
+    const a = document.createElement("a"); a.href = "#" + s.id; a.textContent = s.dataset.title; nav.appendChild(a);
+    s.querySelectorAll("h3[id]").forEach(h => {
+      const b = document.createElement("a"); b.href = "#" + h.id; b.className = "sub"; b.textContent = h.textContent; nav.appendChild(b);
+    });
+  });
+  // 複製按鈕
+  document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", async () => {
+    const text = b.closest(".blk").querySelector("pre").innerText;
+    try { await navigator.clipboard.writeText(text); b.textContent = "已複製 ✓"; b.classList.add("ok"); }
+    catch (e) { b.textContent = "請手動選取"; }
+    setTimeout(() => { b.textContent = "複製"; b.classList.remove("ok"); }, 1500);
+  }));
+})();
+</script>
+</body>
+</html>

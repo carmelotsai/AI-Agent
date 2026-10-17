@@ -1,0 +1,21 @@
+{
+  "name": "gemini-pi-agent",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Pi Agent 引擎 + Google Gemini API，本機執行、接 Telegram 的個人 AI 助理",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "start": "node --env-file=.env bridge.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "1.0.1",
+    "docx": "9.7.2",
+    "exceljs": "4.4.0",
+    "jszip": "3.10.2",
+    "marked": "18.0.14",
+    "word-extractor": "1.0.4"
+  }
+}

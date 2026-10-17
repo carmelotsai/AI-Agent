@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>桌面版實測 L0～L1</title>
+<style>
+:root{--bg:#f7f6f2;--fg:#1f2328;--muted:#5d6570;--line:#dcd8cf;--card:#fff;--head:#f0ede6;--accent:#2f6fb3;--ok:#1f8a4c;--ok-bg:#e3f4ea;--bad:#c0392b;--bad-bg:#fbe5e2;--skip:#8a6d1f;--skip-bg:#f6efd9;--code:#f1efe9;--agent:#eaf1fb;--agent-line:#9dbbe3;--warn-bg:#fdf3e1;--warn-line:#e0a940}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1c1e;--fg:#e6e6e3;--muted:#a3a7ad;--line:#393b3f;--card:#232427;--head:#2c2e32;--accent:#7fb0e8;--ok:#5fcf8f;--ok-bg:#1f3a2a;--bad:#f08a7c;--bad-bg:#43241f;--skip:#e0c46a;--skip-bg:#3b331c;--code:#2b2c30;--agent:#1f2a3a;--agent-line:#3d5a80;--warn-bg:#3a2f1a;--warn-line:#a07a2c}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 "Microsoft JhengHei UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+header.top{position:sticky;top:0;z-index:5;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px}
+.top-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center}
+.top h1{font-size:18px;margin:0 12px 0 0}
+.stat{font-size:14px;color:var(--muted)}.stat b{color:var(--fg)}
+.bar{flex:1 1 220px;height:8px;background:var(--line);border-radius:4px;overflow:hidden;display:flex;min-width:160px}
+.bar i{display:block;height:100%}.bar .ok{background:var(--ok)}.bar .bad{background:var(--bad)}.bar .skip{background:var(--skip)}
+.btn{font:inherit;font-size:14px;padding:5px 12px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.layout{max-width:1180px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px}
+@media (min-width:1080px){.layout{grid-template-columns:220px minmax(0,1fr)}}
+nav.side{display:none}
+@media (min-width:1080px){nav.side{display:block;position:sticky;top:76px;align-self:start;max-height:calc(100vh - 96px);overflow:auto;font-size:14px}}
+nav.side a{display:flex;justify-content:space-between;gap:6px;color:var(--fg);text-decoration:none;padding:4px 0 4px 10px;border-left:2px solid var(--line)}
+nav.side a:hover{color:var(--accent);border-left-color:var(--accent)}
+.count{font-size:12px;color:var(--muted);white-space:nowrap}.count.done{color:var(--ok)}.count.has-bad{color:var(--bad)}
+main{min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 20px 16px;margin-bottom:22px;scroll-margin-top:80px}
+.card h2{font-size:21px;display:flex;justify-content:space-between;gap:10px;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:6px}
+.card h3{font-size:17px;margin:22px 0 8px}
+p,ul,ol{margin:8px 0}li{margin:3px 0}
+code{font-family:Consolas,"Cascadia Mono",monospace;font-size:.9em;background:var(--code);padding:.1em .35em;border-radius:4px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.meta label,.metrics label{font-size:13px;color:var(--muted);display:block}
+input[type=text],input[type=number]{width:100%;font:inherit;font-size:15px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg)}
+.note{margin:12px 0;padding:8px 14px;border-left:4px solid var(--warn-line);background:var(--warn-bg);border-radius:0 6px 6px 0}
+.tip{margin:12px 0;padding:8px 14px;border-left:4px solid var(--muted);background:var(--bg);border-radius:0 6px 6px 0}
+.done-box{margin:12px 0;padding:8px 14px;border-left:4px solid var(--ok);background:var(--ok-bg);border-radius:0 6px 6px 0}
+.blk{margin:10px 0;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+.blk .lbl{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:4px 10px;background:var(--head);color:var(--muted)}
+.blk pre{margin:0;padding:10px 12px;overflow:auto;font-family:Consolas,"Cascadia Mono","Microsoft JhengHei UI",monospace;font-size:14.5px;white-space:pre-wrap;word-break:break-word}
+.blk.agent{border-color:var(--agent-line)}.blk.agent .lbl{background:var(--agent);color:var(--accent)}.blk.agent pre{background:var(--agent)}
+.blk.screen{border-style:dashed}.blk.screen pre{background:transparent;color:var(--muted)}
+.blk.file pre{background:var(--code)}
+.copy{font:inherit;font-size:12.5px;padding:2px 10px;border:1px solid var(--agent-line);border-radius:12px;background:var(--card);color:var(--accent);cursor:pointer}
+.copy.ok{color:var(--ok);border-color:var(--ok)}
+.table{overflow-x:auto;margin:10px 0;border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--head);white-space:nowrap}tr:last-child td{border-bottom:0}
+td.id{white-space:nowrap;color:var(--muted);font-size:13px}
+td.result{min-width:200px}
+.choice{display:inline-flex;gap:4px;flex-wrap:wrap}
+.choice button{font:inherit;font-size:13px;padding:3px 8px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--muted);cursor:pointer}
+.choice button[aria-pressed=true][data-v=ok]{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+.choice button[aria-pressed=true][data-v=bad]{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.choice button[aria-pressed=true][data-v=skip]{background:var(--skip-bg);color:var(--skip);border-color:var(--skip)}
+td.result textarea,.free{display:block;width:100%;margin-top:6px;font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);resize:vertical;min-height:32px}
+.free{min-height:90px;font-size:14px}
+tr.r-ok td{background:color-mix(in srgb,var(--ok-bg) 45%,transparent)}
+tr.r-bad td{background:color-mix(in srgb,var(--bad-bg) 60%,transparent)}
+tr.r-skip td{background:color-mix(in srgb,var(--skip-bg) 45%,transparent)}
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0 4px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.counter{display:flex;align-items:center;gap:6px}
+.counter button{font:inherit;width:32px;height:32px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer;font-size:16px}
+.counter output{min-width:34px;text-align:center;font-size:18px;font-weight:bold}
+dialog{max-width:760px;width:calc(100% - 32px);border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+dialog textarea{width:100%;height:50vh;font-family:Consolas,monospace;font-size:13px;background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:6px}
+@media (max-width:700px){th,td{padding:6px 7px}td.result{min-width:0}.card{padding:6px 14px 14px}}
+@media print{header.top,nav.side,.btn,.copy{display:none}.layout{display:block}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+  <h1>桌面版實測 L0～L1</h1>
+  <span class="stat">通過 <b id="s-ok">0</b>・失敗 <b id="s-bad">0</b>・略過 <b id="s-skip">0</b>・未測 <b id="s-todo">0</b></span>
+  <div class="bar"><i class="ok" id="b-ok"></i><i class="bad" id="b-bad"></i><i class="skip" id="b-skip"></i></div>
+  <button class="btn primary" id="export">匯出結果</button>
+  <button class="btn" id="reset">清除全部</button>
+</div></header>
+
+<div class="layout">
+<nav class="side" id="nav"></nav>
+<main>
+
+<!-- ===================== 準備 ===================== -->
+<section class="card" id="prep" data-title="測試前準備">
+<h2>測試前準備</h2>
+<p>這份流程是把 L0～L1 的 CLI 版手冊，改成用 <b>Antigravity 桌面 App</b> 走一遍。目的是回答總路線圖第 8 節 #12：<b>新手路線要用 CLI 還是桌面版</b>。</p>
+<p>每一課都有一張檢查表，以及「花幾分鐘、權限確認幾次、卡住幾次」三個計數。結果會自動存在這個瀏覽器裡，做完按右上角「<b>匯出結果</b>」，把文字貼給 Claude。</p>
+
+<div class="meta">
+  <div><label>App 版本（Settings → Application 最下面）</label><input type="text" data-k="meta-version"></div>
+  <div><label>測試日期</label><input type="text" data-k="meta-date"></div>
+  <div><label>模型（對話框下方）</label><input type="text" data-k="meta-model" placeholder="例：Gemini 3.8 Flash High"></div>
+  <div><label>Security Preset</label><input type="text" data-k="meta-preset" placeholder="Default"></div>
+</div>
+
+<h3>三條規則</h3>
+<ol>
+  <li><b>Security Preset 維持 Default。</b>不要選 Full machine 或 Turbo mode。</li>
+  <li><b>權限詢問先看再按。</b>預設選「1. Yes, allow this time」，看不懂就選「5. No」先問它。</li>
+  <li><b>金鑰、Token 不貼進對話框。</b>只用記事本填進 <code>.env</code>。</li>
+</ol>
+
+<h3>跟 CLI 版不一樣的地方（L0-1 測試已確認）</h3>
+<div class="table"><table>
+<tr><th>動作</th><th>CLI 版</th><th>桌面版（Default）</th></tr>
+<tr><td>工作資料夾裡寫檔、改檔</td><td>事前問</td><td><b>不問</b>，事後有「N file changed」和 Review</td></tr>
+<tr><td>執行指令</td><td>事前問，4 個選項</td><td>事前問，5 個選項（這次／這段對話／這個專案／全部／No）</td></tr>
+<tr><td>工作資料夾以外的檔案</td><td>事前問</td><td>事前問（這次要驗證）</td></tr>
+<tr><td>工作現場</td><td>打 <code>agy</code> 時所在的資料夾</td><td>上方顯示的 Project</td></tr>
+</table></div>
+
+<h3>這次用新的資料夾和 Bot</h3>
+<div class="note">
+<ul>
+  <li><code>~\ai-practice</code> 裡已經有 CLI 版做出來的 <code>待辦.md</code>、<code>夜市.md</code>、會議紀錄。這次 L0 改用新的資料夾 <b><code>ai-practice-app</code></b>，比較才公平。</li>
+  <li>L1 用新的資料夾 <b><code>ai-secretary-app</code></b>。</li>
+  <li>你電腦上已經有秘書（<code>gemini-pi-agent</code>、<code>my-agent</code>）。L1 測試<b>另外開一個測試用的 Telegram Bot</b>，不然兩個秘書會互搶訊息（<code>Conflict</code>）。</li>
+</ul>
+</div>
+</section>
+
+<!-- ===================== L0-1 ===================== -->
+<section class="card lesson" id="L0-1" data-title="L0-1・基本概念">
+<h2>L0-1・基本概念 <span class="count"></span></h2>
+<div class="done-box">2026-10-02 已測過，結果直接按下面的按鈕記錄即可。</div>
+<div class="table"><table>
+<tr><th>#</th><th>項目</th><th>預期／觀察</th><th>結果</th></tr>
+<tr data-id="L01-1"><td class="id">T0-1-01</td><td>Agent 會動手</td><td>直接建好 <code>測試.txt</code>、自己執行 <code>node -v</code></td><td class="result"></td></tr>
+<tr data-id="L01-2"><td class="id">T0-1-02</td><td>額度</td><td>模型選單顯示模型名稱；這次沒碰到額度上限</td><td class="result"></td></tr>
+<tr data-id="L01-3"><td class="id">T0-1-03</td><td>帳號登入</td><td>用 Google 帳號，左下角 Settings 看得到</td><td class="result"></td></tr>
+<tr data-id="L01-4"><td class="id">T0-1-04</td><td>權限詢問</td><td>指令事前問；寫檔不問、事後 Review</td><td class="result"></td></tr>
+<tr data-id="L01-5"><td class="id">觀察</td><td>資料同意設定</td><td>Settings 的 General、Application、帳號選單都找不到</td><td class="result"></td></tr>
+</table></div>
+</section>
+
+<!-- ===================== L0-2 ===================== -->
+<section class="card lesson" id="L0-2" data-title="L0-2・資料夾">
+<h2>L0-2・資料夾（不用 PowerShell 版） <span class="count"></span></h2>
+<p>CLI 版這一課教 PowerShell。桌面版要測的是：<b>完全不碰 PowerShell，新手能不能把工作現場準備好？</b></p>
+
+<h3>步驟 1：用檔案總管建資料夾</h3>
+<ol>
+  <li>開檔案總管，點一下上方的<b>網址列</b>（顯示目前位置的那一長條），整條會變成可以打字。</li>
+  <li>打 <code>%USERPROFILE%</code>，按 Enter。就會跳到你的<b>家目錄</b>，資料夾名稱是你電腦的使用者名稱，每個人都不一樣。</li>
+  <li>空白處按右鍵 →「新增」→「資料夾」，取名 <code>ai-practice-app</code>。</li>
+</ol>
+<div class="blk agent"><div class="lbl">⌨️ 貼到檔案總管的網址列<button class="copy">複製</button></div><pre>%USERPROFILE%</pre></div>
+<div class="tip">記下來：網址列要先點一下才能打字，學員找不找得到？<code>%USERPROFILE%</code> 前後的 <code>%</code> 會不會漏打？</div>
+
+<h3>步驟 2：用記事本建 hello.txt</h3>
+<ol>
+  <li>進到 <code>ai-practice-app</code>，空白處按右鍵 →「新增」→「文字文件」，取名時<b>只打 <code>hello</code></b>，按 Enter。</li>
+  <li>雙擊打開，打「你好」，存檔、關掉。</li>
+</ol>
+<div class="tip">Windows 預設會隱藏副檔名 <code>.txt</code>，所以畫面上只會看到 <code>hello</code>，實際檔名是 <code>hello.txt</code>。如果取名時打了 <code>hello.txt</code>，實際會變成 <code>hello.txt.txt</code>，agent 就找不到。這也是教材要寫的坑。</div>
+
+<h3>步驟 3：在 App 加入專案</h3>
+<ol>
+  <li>Antigravity App 左邊 Projects 旁的<b>資料夾＋號圖示</b> → 選 <code>ai-practice-app</code>。</li>
+  <li><b>從專案裡開對話</b>：滑鼠移到左邊的 <code>ai-practice-app</code> 上，右邊會出現「＋」（提示文字「New Conversation in Project」），按它開新對話。<b>不要用左上角的「New Conversation」</b>，那個會開在專案外面。</li>
+  <li><b>確認上方標題是「ai-practice-app / …」</b>，左邊這段對話列在 <code>ai-practice-app</code> 底下，不在「Conversations」區。</li>
+</ol>
+
+<div class="table"><table>
+<tr><th>#</th><th>項目</th><th>合格標準</th><th>結果</th></tr>
+<tr data-id="L02-1"><td class="id">D0-2-01</td><td>建得出資料夾</td><td>家目錄下有 <code>ai-practice-app</code></td><td class="result"></td></tr>
+<tr data-id="L02-2"><td class="id">D0-2-02</td><td>hello.txt 檔名正確</td><td>不是 <code>hello.txt.txt</code></td><td class="result"></td></tr>
+<tr data-id="L02-3"><td class="id">D0-2-03</td><td>專案選對</td><td>對話上方標題是「ai-practice-app / …」；第一次就開對了才算通過</td><td class="result"></td></tr>
+<tr data-id="L02-4"><td class="id">觀察</td><td>整課有沒有用到 PowerShell</td><td>沒用到＝通過</td><td class="result"></td></tr>
+</table></div>
+<div class="metrics" data-lesson="L0-2"></div>
+</section>
+
+<!-- ===================== L0-3 ===================== -->
+<section class="card lesson" id="L0-3" data-title="L0-3・裝好施工人員">
+<h2>L0-3・裝好施工人員 <span class="count"></span></h2>
+<p>App 已經裝好、登入過了。這一課補測剩下的項目，以及<b>學員要做的設定檢查</b>。</p>
+
+<h3>步驟 1：Node.js</h3>
+<p>你的電腦已經有 Node.js（v24.13.1），這一項選「略過」。教材要決定的是：桌面版要叫學員自己裝 Node.js，還是讓 App 裡的 agent 檢查、告訴學員怎麼裝？</p>
+
+<h3>步驟 2：Settings 檢查（學員按 Not now 跳過精靈時要做）</h3>
+<ol>
+  <li>左下角 Settings → General → <b>Security Preset</b> 是 <code>Default</code>。</li>
+  <li>General → Tool Permissions → File Access Rules、Terminal Commands 都是空的。</li>
+  <li>General → <b>Plan Review Policy</b> 是 <code>Always Ask</code>。</li>
+  <li>Application → <b>Enable Remote Control</b> 是關的。</li>
+</ol>
+
+<h3>步驟 3：關掉再開</h3>
+<ol>
+  <li>關掉 App 視窗。到工作列右下角看有沒有 Antigravity 的圖示還在跑（Keep In Menu Bar 是關的，應該不會有）。</li>
+  <li>重新打開 App。</li>
+</ol>
+
+<div class="table"><table>
+<tr><th>#</th><th>項目</th><th>合格標準</th><th>結果</th></tr>
+<tr data-id="L03-1"><td class="id">T0-3-01</td><td>Node.js</td><td>有 v22.19 以上（已裝可略過）</td><td class="result"></td></tr>
+<tr data-id="L03-2"><td class="id">D0-3-02</td><td>Settings 四項都正確</td><td>Default／清單空的／Always Ask／Remote Control 關</td><td class="result"></td></tr>
+<tr data-id="L03-3"><td class="id">T0-3-04</td><td>下次不用重登</td><td>重開後直接可以對話</td><td class="result"></td></tr>
+<tr data-id="L03-4"><td class="id">觀察</td><td>專案和對話還在</td><td>左邊 Projects 還有 <code>ai-practice-app</code></td><td class="result"></td></tr>
+<tr data-id="L03-5"><td class="id">觀察</td><td>關掉視窗＝真的關掉</td><td>工作列沒有殘留的程式</td><td class="result"></td></tr>
+</table></div>
+<div class="metrics" data-lesson="L0-3"></div>
+</section>
+
+<!-- ===================== L0-4 ===================== -->
+<section class="card lesson" id="L0-4" data-title="L0-4・第一次派工">
+<h2>L0-4・第一次派工 <span class="count"></span></h2>
+<p>照 CLI 版的六個任務做，加一個「讀資料夾外面的檔案」。照 L0-2 步驟 3 從 <code>ai-practice-app</code> 開新對話，<b>確認上方標題是「ai-practice-app / …」</b>再開始。</p>
+<div class="note">⚠️ 2026-10-02 實測：左上角的「New Conversation」可能開在<b>專案外面</b>，這時工作現場是家目錄下的 <code>.gemini\antigravity\scratch</code>，它會找不到你的檔案、想跑指令去搜尋。權限詢問的選項出現「when not in a project」也是同一個徵兆。</div>
+
+<h3>任務 1：讀檔</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>hello.txt 裡面寫了什麼？</pre></div>
+<p>預期：不問就讀。</p>
+
+<h3>任務 1b：讀資料夾外面的檔案（新增）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>我家目錄下的 ai-practice\hello.txt 裡面寫了什麼？</pre></div>
+<p>預期：這是工作資料夾<b>外面</b>的檔案，Default 應該會先問。<b>詢問畫面請截圖</b>。看完選「5. No」拒絕即可。</p>
+
+<h3>任務 2：建立新檔</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>幫我建立一個 待辦.md，列出這週三件事：交季報、訂下週出差的高鐵票、回覆客戶報價。用勾選清單的格式。</pre></div>
+<p>預期：不問就建好。接著：</p>
+<ol>
+  <li>按「<b>N file changed</b>」右邊的 <b>Review</b>，<b>截圖</b>。</li>
+  <li>點回覆裡的檔名 <code>待辦.md</code>，看它會用什麼打開。</li>
+  <li>自己到檔案總管用記事本打開確認。</li>
+</ol>
+
+<h3>任務 3：修改檔案</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>幫我改 hello.txt，在最後加一行「早安」。</pre></div>
+<p>預期：不問就改。按 Review 看差異：<b>有沒有「退回／Undo／Reject」之類的按鈕？</b>有的話按下去，確認 <code>hello.txt</code> 真的變回原樣。這決定教材要怎麼教「改錯了怎麼辦」。</p>
+
+<h3>任務 4：執行指令（看不懂先問）</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>用指令幫我查這個資料夾裡有哪些檔案，還有每個檔案多大。</pre></div>
+<p>跳出詢問時，先選「<b>5. No</b>」，在旁邊的輸入框打：</p>
+<div class="blk agent"><div class="lbl">💬 貼到「No」旁邊的輸入框<button class="copy">複製</button></div><pre>先不要執行。請告訴我這一行指令在做什麼？會不會改動或刪除任何東西？</pre></div>
+<p>聽懂了再說「好，請執行」，再問你時選「1. Yes, allow this time」。</p>
+
+<h3>任務 5：叫它停下、重做</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>寫一篇 2000 字的文章介紹台灣的夜市文化，存成 夜市.md。</pre></div>
+<p>送出後馬上找<b>停止的方法</b>：先試按 <code>Esc</code>；沒用的話找對話框右邊的停止按鈕（方塊圖示）。記下哪一個有用。停下來後：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>剛剛停掉了。改成 300 字就好，一樣存成 夜市.md。</pre></div>
+<div class="tip">桌面版寫檔不會先問，所以它可能在你按停止前就已經把 2000 字的檔案寫好了。看一下資料夾裡的 <code>夜市.md</code> 是哪一版。</div>
+
+<h3>任務 6：開新對話</h3>
+<p>滑鼠移到 <code>ai-practice-app</code> 上，按「＋」（New Conversation in Project），確認標題有專案名稱。再試一次打 <code>/</code>，看跳出哪些指令（有沒有 <code>/clear</code>、<code>/usage</code>、<code>/model</code>），<b>截圖</b>。</p>
+
+<div class="table"><table>
+<tr><th>#</th><th>項目</th><th>合格標準</th><th>結果</th></tr>
+<tr data-id="L04-1"><td class="id">任務 1</td><td>讀工作資料夾裡的檔</td><td>不問就讀，內容正確</td><td class="result"></td></tr>
+<tr data-id="L04-2"><td class="id">任務 1b</td><td>讀資料夾外的檔</td><td>會先問</td><td class="result"></td></tr>
+<tr data-id="L04-3"><td class="id">T0-4-01</td><td>建檔後自己確認</td><td><code>待辦.md</code> 內容正確；Review 看得懂</td><td class="result"></td></tr>
+<tr data-id="L04-4"><td class="id">任務 3</td><td>改檔看得懂差異</td><td>Review 標得出新增「早安」</td><td class="result"></td></tr>
+<tr data-id="L04-5"><td class="id">任務 3</td><td>改錯能退回</td><td>有退回按鈕，而且真的還原（沒有就記 ❌）</td><td class="result"></td></tr>
+<tr data-id="L04-6"><td class="id">T0-4-03</td><td>看不懂先問</td><td>選 No 能附上問題，它解釋後再執行</td><td class="result"></td></tr>
+<tr data-id="L04-7"><td class="id">T0-4-04</td><td>叫得停</td><td>停得下來，並照新要求重做（備註寫用哪個方法停的）</td><td class="result"></td></tr>
+<tr data-id="L04-8"><td class="id">任務 6</td><td>開新對話</td><td>新對話在專案裡，而且它不記得前面的事</td><td class="result"></td></tr>
+<tr data-id="L04-9"><td class="id">觀察</td><td><code>/</code> 指令清單</td><td>備註寫有哪些指令（有沒有看用量的）</td><td class="result"></td></tr>
+</table></div>
+<div class="metrics" data-lesson="L0-4"></div>
+</section>
+
+<!-- ===================== L0-5 ===================== -->
+<section class="card lesson" id="L0-5" data-title="L0-5・照工單施工">
+<h2>L0-5・照工單施工 <span class="count"></span></h2>
+
+<h3>步驟 1：把迷你工單放進資料夾</h3>
+<p>把 repo 裡的 <code>docs\L0-5_會議紀錄_迷你工單.md</code> 複製到 <code>ai-practice-app</code>。</p>
+
+<h3>步驟 2：開新對話，交出工單</h3>
+<p>滑鼠移到 <code>ai-practice-app</code> 上，按「＋」（New Conversation in Project）開新對話（確認標題有專案名稱），然後試試在對話框打 <code>@</code>，看能不能直接選檔案。</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>請先完整讀過 L0-5_會議紀錄_迷你工單.md，照這份工單幫我施工。</pre></div>
+
+<h3>步驟 3：回答問題</h3>
+<p>它應該<b>先停下來</b>問兩題：會議日期、記錄人。回答：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>會議日期是 2026 年 9 月 22 日，記錄人寫 Carmelo。</pre></div>
+
+<h3>步驟 4：簽核《開工確認》</h3>
+<p>檔名、日期都對再回「同意」。</p>
+<div class="note"><b>桌面版的關鍵差異</b>：建檔不會再問你，所以《開工確認》是你<b>唯一</b>的事前把關。它有沒有在你回「同意」之前就建好檔案？</div>
+
+<h3>步驟 5：看《完成回報》，自己驗收</h3>
+<p>用 Review 和記事本，對照 CLI 版手冊第三節的七項：</p>
+<ol>
+  <li>檔名是 <code>會議紀錄_2026-09-22_展場攤位.md</code></li>
+  <li>四段都有：討論重點、決議、待辦、待確認</li>
+  <li>待辦三項：交設計稿（小李，10/10）、聯絡印刷廠並比兩家價格（小王，未指定）、換運輸廠商（阿明，未指定）</li>
+  <li><b>小王、阿明的期限是「（未指定）」，不是 10/15</b></li>
+  <li>決議：預算上限 30 萬、攤位最晚 10/15 定案</li>
+  <li>待確認：小王、阿明的期限；下次開會的日期</li>
+  <li>資料夾裡其他檔案都沒被改</li>
+</ol>
+
+<h3>步驟 6：API Key</h3>
+<p>你已經有 Gemini API Key，選「略過」。桌面版跟 CLI 版這一步一樣。</p>
+
+<div class="table"><table>
+<tr><th>#</th><th>項目</th><th>合格標準</th><th>結果</th></tr>
+<tr data-id="L05-1"><td class="id">觀察</td><td><code>@</code> 選檔</td><td>打 <code>@</code> 會跳出檔案清單</td><td class="result"></td></tr>
+<tr data-id="L05-2"><td class="id">T0-5-01a</td><td>先問日期、記錄人</td><td>停下來等你回答</td><td class="result"></td></tr>
+<tr data-id="L05-3"><td class="id">T0-5-01b</td><td>先給《開工確認》</td><td>回「同意」之前沒有建檔</td><td class="result"></td></tr>
+<tr data-id="L05-4"><td class="id">觀察</td><td>沒有執行指令</td><td>整個過程沒有跳出指令詢問</td><td class="result"></td></tr>
+<tr data-id="L05-5"><td class="id">T0-5-02</td><td>成品七項正確</td><td>有錯叫它改到對也算通過（備註寫錯哪項）</td><td class="result"></td></tr>
+<tr data-id="L05-6"><td class="id">T0-5-03</td><td>回報屬實</td><td>它打勾的項目，你檢查也是對的</td><td class="result"></td></tr>
+<tr data-id="L05-7"><td class="id">T0-5-04</td><td>金鑰就緒</td><td>已有可略過</td><td class="result"></td></tr>
+</table></div>
+<div class="metrics" data-lesson="L0-5"></div>
+</section>
+
+<!-- ===================== L1 ===================== -->
+<section class="card lesson" id="L1" data-title="L1・到職">
+<h2>L1・到職 <span class="count"></span></h2>
+<p>這是最重要的比較：CLI 版照 L1 工單施工時，<b>權限確認超過 40 次</b>。這次用的是 V1.4 工單（固定的 <code>node self-check.mjs</code>），也是 V1.4 第一次真機實跑。</p>
+
+<h3>步驟 0：準備測試用 Bot</h3>
+<ol>
+  <li>Telegram 找 <code>@BotFather</code>，傳 <code>/newbot</code>，取個測試用的名字（例如「桌面版測試秘書」）。拿到 Token 先存在密碼管理工具裡。</li>
+  <li>找到這個新 Bot，按 Start，隨便傳一句話。</li>
+  <li>你的 User ID 跟現有的秘書一樣，直接沿用。</li>
+</ol>
+<div class="note">測試期間<b>不要開</b>現有秘書的黑視窗也沒關係，因為用的是不同的 Bot。但 Gemini API Key 是同一把，額度會一起算。</div>
+
+<h3>步驟 1：建資料夾、放工單</h3>
+<ol>
+  <li>用檔案總管在家目錄建 <code>ai-secretary-app</code>。</li>
+  <li>把 repo 裡的 <code>docs\L1_到職篇_施工工單.md</code> 複製進去（工作目錄裡的是 V1.4，還沒 commit，就用這份）。</li>
+  <li>App 左邊 Projects 旁的資料夾＋號 → 加入 <code>ai-secretary-app</code> → 滑鼠移到它上面，按「＋」（New Conversation in Project），<b>確認上方標題是「ai-secretary-app / …」</b>。開在專案外面的話，秘書會被裝到 scratch 資料夾。</li>
+</ol>
+
+<h3>步驟 1b（選做）：擋住它讀 .env</h3>
+<p>桌面版和 CLI 版都一樣：工作資料夾裡的檔案它可以自由讀取，包括你之後填了金鑰的 <code>.env</code>。可以試試看能不能在設定裡擋掉：</p>
+<p>Settings → General → Tool Permissions → File Access Rules → File Reads → <b>Add</b>，看能不能加一條「禁止讀取 <code>ai-secretary-app</code> 裡的 <code>.env</code>」（看它要你填完整路徑還是可以用萬用字元）。<b>畫面請截圖</b>；看不懂怎麼設就先跳過，這一項記「略過」。</p>
+
+<h3>步驟 2：交出工單</h3>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>請照 L1_到職篇_施工工單.md 幫我建置。</pre></div>
+<p>一開始它會跑幾個環境點檢的指令（<code>node -p "process.platform"</code>、<code>node --version</code>、<code>npm --version</code>）。這些都是只讀的，可以選「3. Yes, and always allow … in this project」試試看專案範圍的允許。</p>
+
+<h3>步驟 3：面談</h3>
+<p>它會一次問九題（第 0 題是安裝位置）。<b>第 0 題一定要回答 <code>ai-secretary-app</code> 的路徑，不能用預設</b>，不然會裝到 <code>ai-secretary</code>。測試用的答案：</p>
+<div class="blk agent"><div class="lbl">💬 貼到 Antigravity 對話框<button class="copy">複製</button></div><pre>0. 家目錄下的 ai-secretary-app（就是你現在工作的這個資料夾）
+1. 小桌
+2. 測試用秘書
+3. 簡潔直接，不繞圈
+4. 不懂就說不懂，不胡說
+5. 老闆
+6. 我在測試 Antigravity 桌面版的施工流程
+7. 一律用繁體中文
+8. 無</pre></div>
+
+<h3>步驟 4：簽核《到職確認單》</h3>
+<p>安裝位置是 <code>C:\Users\你的使用者名稱\ai-secretary-app</code>（也就是目前專案的資料夾）、人設和你的答案一致，再回「同意」。</p>
+
+<h3>步驟 5：施工中</h3>
+<p>建檔不會問，所以主要會跳出的是<b>指令詢問</b>。每一次都按一下下方的「權限確認 ＋」，並留意：</p>
+<ul>
+  <li><code>npm install</code> 之類的安裝指令：選 1。</li>
+  <li><code>node self-check.mjs</code>：工單說可以放心允許，選 1。要跑大約 2 分鐘，等到最後一行「自檢結束」。</li>
+  <li><b>它有沒有自己另寫臨時腳本</b>（<code>check_q03.mjs</code>、<code>run_q05.js</code> 之類）？有的話是違反工單紀律第 10 條。</li>
+  <li><b>它有沒有用 <code>.env</code> 啟動秘書</b>（<code>npm start</code>、<code>node --env-file=.env</code>）？有的話選 No 拒絕。</li>
+</ul>
+
+<h3>步驟 6：填 .env</h3>
+<p>它請你填 <code>.env</code> 時，用<b>記事本</b>打開 <code>ai-secretary-app\.env</code>（不是 <code>.env.example</code>），填入：</p>
+<div class="blk file"><div class="lbl">📄 記事本裡的 .env（不用複製，照格式填）</div><pre>GEMINI_API_KEY=你的Gemini金鑰
+TELEGRAM_BOT_TOKEN=測試Bot的Token
+TELEGRAM_ALLOWED_USERS=你的UserID</pre></div>
+<p>存檔後回到對話框說「填好了」。<b>不要把金鑰貼進對話框。</b></p>
+
+<h3>步驟 7：上班、實機考核</h3>
+<p>到 <code>ai-secretary-app</code> 雙擊 <code>啟動 Agent.bat</code>，看到「等待 Telegram 訊息…」後，用手機對<b>測試 Bot</b> 做 T-01～T-07。</p>
+<div class="tip">測完記得關掉黑視窗。之後不用的話，可以對 <code>@BotFather</code> 傳 <code>/deletebot</code> 刪掉測試 Bot。</div>
+
+<div class="table"><table>
+<tr><th>#</th><th>項目</th><th>合格標準</th><th>結果</th></tr>
+<tr data-id="L1-01"><td class="id">準備</td><td>測試 Bot 建好</td><td>有 Token，已對它傳過一句話</td><td class="result"></td></tr>
+<tr data-id="L1-02"><td class="id">選做</td><td>擋住讀 .env</td><td>File Reads 能加禁止規則（備註寫怎麼設）</td><td class="result"></td></tr>
+<tr data-id="L1-03"><td class="id">面談</td><td>一次問完、照原話</td><td>九題一次問；沒自己填答案</td><td class="result"></td></tr>
+<tr data-id="L1-04"><td class="id">確認單</td><td>等「同意」才開工</td><td>同意之前沒有建任何檔案</td><td class="result"></td></tr>
+<tr data-id="L1-05"><td class="id">位置</td><td>裝在對的地方</td><td>檔案都在 <code>ai-secretary-app</code>，沒有跑出「工作區之外」</td><td class="result"></td></tr>
+<tr data-id="L1-06"><td class="id">紀律 10</td><td>只用 self-check.mjs</td><td>沒有另寫臨時腳本</td><td class="result"></td></tr>
+<tr data-id="L1-07"><td class="id">紀律 10</td><td>沒用 .env 啟動</td><td>沒有 <code>npm start</code>、<code>--env-file=.env</code></td><td class="result"></td></tr>
+<tr data-id="L1-08"><td class="id">Q-01～13</td><td>工程自檢</td><td>沒有 ❌（備註貼 ✅／❌ 摘要）</td><td class="result"></td></tr>
+<tr data-id="L1-09"><td class="id">.env</td><td>填對檔案</td><td>填在 <code>.env</code>，<code>.env.example</code> 還是空白</td><td class="result"></td></tr>
+<tr data-id="L1-10"><td class="id">觀察</td><td>它有沒有讀 .env</td><td>回覆或過程裡沒出現你的金鑰（出現就記 ❌）</td><td class="result"></td></tr>
+<tr data-id="L1-11"><td class="id">交貨</td><td>交貨報告</td><td>有上下班方式、自檢摘要、T 表、BotFather 加鎖</td><td class="result"></td></tr>
+<tr data-id="L1-T1"><td class="id">T-01</td><td>認得自己</td><td>傳「你是誰？」，符合人設（小桌、測試用秘書）</td><td class="result"></td></tr>
+<tr data-id="L1-T2"><td class="id">T-02</td><td>認得老闆</td><td>傳「我是誰？」，稱呼「老闆」、提到測試桌面版</td><td class="result"></td></tr>
+<tr data-id="L1-T3"><td class="id">T-03</td><td>會看文件</td><td>傳「把 SOUL.md 第一行唸給我」，跟檔案一致</td><td class="result"></td></tr>
+<tr data-id="L1-T4"><td class="id">T-04</td><td>交代的事會記</td><td>「記下來：我週三晚上不回訊息」→ 重啟 → 問得出來</td><td class="result"></td></tr>
+<tr data-id="L1-T5"><td class="id">T-05</td><td>不自作主張</td><td>閒聊後 <code>MEMORY.md</code> 沒變</td><td class="result"></td></tr>
+<tr data-id="L1-T6"><td class="id">T-06</td><td>只聽老闆的</td><td>別的帳號傳訊息沒回應（沒有第二個帳號可略過）</td><td class="result"></td></tr>
+<tr data-id="L1-T7"><td class="id">T-07</td><td>看得出他在忙</td><td>「幫我寫一段 300 字的自我介紹」時顯示「輸入中…」</td><td class="result"></td></tr>
+</table></div>
+<div class="metrics" data-lesson="L1"></div>
+</section>
+
+<!-- ===================== 總結 ===================== -->
+<section class="card" id="sum" data-title="總結：CLI vs 桌面版">
+<h2>總結：CLI vs 桌面版</h2>
+<div class="table"><table>
+<tr><th>項目</th><th>CLI 版（之前的試跑）</th><th>桌面版（這次）</th></tr>
+<tr><td>L1 權限確認次數</td><td>超過 40 次（V1.3 工單）</td><td><input type="text" data-k="sum-perm"></td></tr>
+<tr><td>出現「工作區之外」</td><td>有</td><td><input type="text" data-k="sum-outside"></td></tr>
+<tr><td>「貼到哪裡」的困擾</td><td>有（7.1）</td><td><input type="text" data-k="sum-paste"></td></tr>
+<tr><td>L0～L1 總共花多久</td><td><input type="text" data-k="sum-cli-time" placeholder="記得的話填"></td><td><input type="text" data-k="sum-time"></td></tr>
+</table></div>
+<label class="stat" for="sum-better">桌面版比較順的地方</label>
+<textarea class="free" id="sum-better" data-k="sum-better"></textarea>
+<label class="stat" for="sum-worse">桌面版比較難／比較危險的地方</label>
+<textarea class="free" id="sum-worse" data-k="sum-worse"></textarea>
+<label class="stat" for="sum-verdict">結論：新手路線要用哪一個？</label>
+<textarea class="free" id="sum-verdict" data-k="sum-verdict"></textarea>
+<p style="margin-top:14px"><button class="btn primary" id="export2">匯出結果</button>　把匯出的文字貼給 Claude，整理進總路線圖 #12。</p>
+</section>
+
+</main>
+</div>
+
+<dialog id="dlg">
+  <p><b>匯出結果</b>（已嘗試複製到剪貼簿；沒成功的話，全選下面的文字自己複製）</p>
+  <textarea id="dlg-text" readonly></textarea>
+  <p><button class="btn" id="dlg-close">關閉</button></p>
+</dialog>
+
+<script>
+(function(){
+  const KEY = "agy-app-test-L0-L1";
+  let st = {};
+  try { st = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { st = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch (e) {} };
+  const LABEL = { ok: "✅ 通過", bad: "❌ 失敗", skip: "⏭ 略過" };
+
+  // 檢查表的按鈕與備註
+  document.querySelectorAll("tr[data-id]").forEach(tr => {
+    const id = tr.dataset.id, td = tr.querySelector("td.result");
+    const box = document.createElement("div"); box.className = "choice";
+    ["ok", "bad", "skip"].forEach(v => {
+      const b = document.createElement("button"); b.type = "button"; b.dataset.v = v; b.textContent = LABEL[v];
+      b.addEventListener("click", () => {
+        const cur = st["r-" + id];
+        st["r-" + id] = cur === v ? "" : v; save(); paint(tr); stats();
+      });
+      box.appendChild(b);
+    });
+    const ta = document.createElement("textarea"); ta.placeholder = "備註"; ta.rows = 1;
+    ta.value = st["n-" + id] || "";
+    ta.addEventListener("input", () => { st["n-" + id] = ta.value; save(); });
+    td.append(box, ta); paint(tr);
+  });
+  function paint(tr){
+    const v = st["r-" + tr.dataset.id] || "";
+    tr.classList.remove("r-ok", "r-bad", "r-skip"); if (v) tr.classList.add("r-" + v);
+    tr.querySelectorAll(".choice button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
+  }
+
+  // 每課的計數
+  document.querySelectorAll(".metrics").forEach(m => {
+    const L = m.dataset.lesson;
+    m.innerHTML =
+      `<div><label>花了幾分鐘</label><input type="number" min="0" data-k="m-${L}-min"></div>` +
+      counter(`m-${L}-perm`, "權限確認次數") + counter(`m-${L}-stuck`, "卡住次數");
+  });
+  function counter(k, label){
+    return `<div><label>${label}</label><div class="counter" data-c="${k}"><button type="button" data-d="-1">−</button><output>${st[k] || 0}</output><button type="button" data-d="1">＋</button></div></div>`;
+  }
+  document.querySelectorAll(".counter").forEach(c => c.addEventListener("click", e => {
+    const d = +(e.target.dataset.d || 0); if (!d) return;
+    const k = c.dataset.c; st[k] = Math.max(0, (st[k] || 0) + d); save();
+    c.querySelector("output").textContent = st[k];
+  }));
+
+  // 一般欄位
+  document.querySelectorAll("[data-k]").forEach(el => {
+    if (st[el.dataset.k] != null) el.value = st[el.dataset.k];
+    el.addEventListener("input", () => { st[el.dataset.k] = el.value; save(); });
+  });
+
+  // 複製按鈕
+  document.querySelectorAll(".copy").forEach(b => b.addEventListener("click", async () => {
+    const text = b.closest(".blk").querySelector("pre").innerText;
+    try { await navigator.clipboard.writeText(text); b.textContent = "已複製 ✓"; b.classList.add("ok"); }
+    catch (e) { b.textContent = "請手動選取"; }
+    setTimeout(() => { b.textContent = "複製"; b.classList.remove("ok"); }, 1500);
+  }));
+
+  // 側欄與統計
+  const nav = document.getElementById("nav");
+  document.querySelectorAll("section.card").forEach(s => {
+    const a = document.createElement("a"); a.href = "#" + s.id;
+    a.innerHTML = `<span>${s.dataset.title}</span><span class="count"></span>`; nav.appendChild(a);
+  });
+  function stats(){
+    let ok = 0, bad = 0, skip = 0, all = 0;
+    document.querySelectorAll("section.lesson").forEach(s => {
+      let o = 0, b = 0, k = 0; const rows = s.querySelectorAll("tr[data-id]");
+      rows.forEach(tr => { const v = st["r-" + tr.dataset.id]; if (v === "ok") o++; else if (v === "bad") b++; else if (v === "skip") k++; });
+      ok += o; bad += b; skip += k; all += rows.length;
+      const txt = `${o + b + k}/${rows.length}`, cls = "count" + (b ? " has-bad" : (o + b + k === rows.length ? " done" : ""));
+      s.querySelector("h2 .count").textContent = txt; s.querySelector("h2 .count").className = cls;
+      const n = nav.querySelector(`a[href="#${s.id}"] .count`); n.textContent = txt; n.className = cls;
+    });
+    const todo = all - ok - bad - skip, pct = x => (all ? x / all * 100 : 0) + "%";
+    document.getElementById("s-ok").textContent = ok; document.getElementById("s-bad").textContent = bad;
+    document.getElementById("s-skip").textContent = skip; document.getElementById("s-todo").textContent = todo;
+    document.getElementById("b-ok").style.width = pct(ok); document.getElementById("b-bad").style.width = pct(bad);
+    document.getElementById("b-skip").style.width = pct(skip);
+  }
+  stats();
+
+  // 匯出
+  function exportText(){
+    const g = k => (st[k] || "").toString().trim();
+    const out = ["# 桌面版實測結果 L0～L1", "",
+      `- App 版本：${g("meta-version")}`, `- 測試日期：${g("meta-date")}`,
+      `- 模型：${g("meta-model")}`, `- Security Preset：${g("meta-preset")}`, ""];
+    document.querySelectorAll("section.lesson").forEach(s => {
+      out.push(`## ${s.dataset.title}`, "");
+      const L = s.querySelector(".metrics")?.dataset.lesson;
+      if (L) out.push(`- 花費：${g(`m-${L}-min`) || "?"} 分鐘・權限確認 ${st[`m-${L}-perm`] || 0} 次・卡住 ${st[`m-${L}-stuck`] || 0} 次`, "");
+      out.push("| # | 項目 | 結果 | 備註 |", "|---|---|---|---|");
+      s.querySelectorAll("tr[data-id]").forEach(tr => {
+        const c = tr.children, v = st["r-" + tr.dataset.id];
+        out.push(`| ${c[0].innerText} | ${c[1].innerText} | ${v ? LABEL[v] : "未測"} | ${g("n-" + tr.dataset.id).replace(/\n/g, " ")} |`);
+      });
+      out.push("");
+    });
+    out.push("## 總結", "",
+      `- L1 權限確認次數：${g("sum-perm")}`, `- 工作區之外：${g("sum-outside")}`,
+      `- 貼到哪裡的困擾：${g("sum-paste")}`, `- 總時間：CLI ${g("sum-cli-time")}／桌面版 ${g("sum-time")}`, "",
+      "### 比較順的地方", g("sum-better"), "", "### 比較難／危險的地方", g("sum-worse"), "", "### 結論", g("sum-verdict"));
+    return out.join("\n");
+  }
+  async function doExport(){
+    const t = exportText(); document.getElementById("dlg-text").value = t;
+    try { await navigator.clipboard.writeText(t); } catch (e) {}
+    document.getElementById("dlg").showModal();
+  }
+  document.getElementById("export").addEventListener("click", doExport);
+  document.getElementById("export2").addEventListener("click", doExport);
+  document.getElementById("dlg-close").addEventListener("click", () => document.getElementById("dlg").close());
+  document.getElementById("reset").addEventListener("click", () => {
+    if (!confirm("確定清除這份測試的所有紀錄？")) return;
+    st = {}; save(); location.reload();
+  });
+})();
+</script>
+</body>
+</html>
