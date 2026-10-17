@@ -1,7 +1,7 @@
 // Gmail 授權（只要做一次）：在專案資料夾執行 `node 外掛/Gmail/授權.mjs`。
 // 會打開瀏覽器到 Google 的授權頁，你按同意後，權杖存到 data/google/gmail-token.json（不進 Git，秘書也讀不到）。
 // 憑證沿用 L3-5 行事曆的 data/google/client.json；Google Cloud 要先啟用 Gmail API、加上兩個權限範圍，步驟見 L3-6 學員手冊。
-// 只要「讀信」和「建草稿」：沒有申請寄信的權限，秘書就算想寄也寄不出去。
+// 讀信用 gmail.readonly，草稿與寄出用 gmail.compose（這個權限本身可以寄信）；秘書每次寄出前都必須經過 Telegram 按鈕確認，這是寄信的唯一防線。
 import { exec } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -15,7 +15,7 @@ const CLIENT_FILE = join(GOOGLE_DIR, "client.json");
 const TOKEN_FILE = join(GOOGLE_DIR, "gmail-token.json");
 const SCOPES = [
   "https://www.googleapis.com/auth/gmail.readonly", // 搜尋、讀信（不會改動信件）
-  "https://www.googleapis.com/auth/gmail.compose", // 建立草稿（寄出要你自己在 Gmail 按）
+  "https://www.googleapis.com/auth/gmail.compose", // 建立草稿與寄出（這個權限本身可以寄信；寄出前一定先傳按鈕問你）
 ];
 const base64url = (buffer) => buffer.toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
