@@ -247,8 +247,12 @@ Telegram 沒有「只允許某人私訊」的原生開關，所以 `.env` 裡的
 
 ## 授權
 
-- **程式**（`.mjs`、`.bat`、`.command`、`.ps1`、`.sh`、`.json` 設定範本、`.pi/skills/` 等）：[MIT License](LICENSE)，Copyright (c) 2026 Carmelo Tsai。
-- **教材**（`docs/` 裡的學員手冊與施工工單、根目錄的 HTML 手冊與測試清單）：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)。可以分享、改作，但要標示出處、不可用於商業用途（例如拿去開付費課程），改作後要用相同授權分享。
-- 施工工單裡附的程式碼片段，跟程式一樣適用 MIT。
+這個專案用兩種授權，完整條文在 [LICENSE](LICENSE)：
+
+- **程式**（`.mjs`、`.json`、`.sh`、`.ps1`、`.bat`、`.command` 等）：[MIT License](LICENSE)。可以自由使用、修改，也可以商用，只要保留著作權聲明。
+- **教材**（`docs/` 全部、HTML 手冊、這份 README 的教學內容、角色範本與技能的說明文字）：[CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh-hant)。可以免費學習、分享、改作，但要標示出處；**不得用於收費課程或販售**；改作的版本也要用同樣的授權公開。
+- `SOUL.md`、`MEMORY.md`、隱私權政策範本這些要你填好自己用的範本，算在程式那邊（MIT），填完直接用就好。
+
+想商業合作（例如用這套教材開課、企業內訓），請透過 [GitHub](https://github.com/carmelotsai) 聯絡作者。
 
 本 repo 不含任何金鑰或個資。
