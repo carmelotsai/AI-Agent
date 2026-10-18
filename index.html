@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>健忘人的 AI 秘書</title>
+<meta name="description" content="我太健忘了，所以做了一個住在 Telegram 裡的 AI 秘書。不用會寫程式，跟著手冊就能做出你自己的。">
+<style>
+:root{--bg:#f7f6f2;--fg:#1f2328;--muted:#5d6570;--line:#dcd8cf;--card:#fff;--accent:#2f6fb3;--accent-fg:#fff;--soft:#eaf1fb;--me:#2f6fb3;--me-fg:#fff;--bot:#f0ede6;--warn-bg:#fdf3e1;--warn-line:#e0a940;--ok:#1f8a4c}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1c1e;--fg:#e6e6e3;--muted:#a3a7ad;--line:#393b3f;--card:#232427;--accent:#7fb0e8;--accent-fg:#14171b;--soft:#1f2a3a;--me:#3d6fa8;--me-fg:#fff;--bot:#2c2e32;--warn-bg:#3a2f1a;--warn-line:#a07a2c;--ok:#5fcf8f}}
+:root[data-theme="dark"]{--bg:#1b1c1e;--fg:#e6e6e3;--muted:#a3a7ad;--line:#393b3f;--card:#232427;--accent:#7fb0e8;--accent-fg:#14171b;--soft:#1f2a3a;--me:#3d6fa8;--me-fg:#fff;--bot:#2c2e32;--warn-bg:#3a2f1a;--warn-line:#a07a2c;--ok:#5fcf8f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.75 "Microsoft JhengHei UI","Microsoft JhengHei","PingFang TC","Noto Sans TC",system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:40px 16px 64px}
+h1{font-size:30px;line-height:1.35;margin:0 0 12px;letter-spacing:.02em}
+h2{font-size:20px;margin:40px 0 12px}
+p{margin:0 0 12px}
+a{color:var(--accent)}
+.lead{font-size:17px;color:var(--muted)}
+/* Telegram 桌面版深色模式的對話示意：顏色固定，不跟著網頁深淺色變 */
+.tg{max-width:440px;margin:24px 0;border-radius:14px;overflow:hidden;background:#0e1621;color:#f5f5f5;font-size:14.5px;line-height:1.55;border:1px solid #22303d}
+.tg-head{background:#17212b;padding:10px 16px;border-bottom:1px solid #0b1118}
+.tg-head strong{display:block;font-size:15px}
+.tg-head span{font-size:13px;color:#7f91a4}
+.tg-body{padding:12px 10px 14px;display:flex;flex-direction:column;gap:6px}
+.tg-day{align-self:center;background:rgba(30,44,58,.85);color:#c8d3dd;font-size:12.5px;padding:2px 10px;border-radius:12px;margin:6px 0}
+.tg-row{display:flex;align-items:flex-end;gap:8px}
+.tg-av{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff}
+.tg-av.bot{background:linear-gradient(#ff8f5a,#f2683c)}
+.tg-av.me{background:linear-gradient(#7d8b99,#5b6876)}
+.tg-msg{background:#182533;border-radius:12px 12px 12px 4px;padding:7px 11px 5px;max-width:calc(100% - 50px);white-space:pre-line}
+.tg-msg.me{background:#2b5278}
+.tg-time{display:block;text-align:right;font-size:12px;color:#6d8296;margin-top:2px;white-space:nowrap}
+.tg-msg.me .tg-time{color:#7da8d3}
+.tg-msg b{font-weight:700}
+ul.can{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+ul.can li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+ul.can strong{display:block}
+ul.can span{color:var(--muted);font-size:15px}
+.note{background:var(--warn-bg);border-left:4px solid var(--warn-line);border-radius:8px;padding:12px 14px;margin:24px 0}
+.note p:last-child{margin:0}
+button.copy{font:inherit;font-size:15px;margin-top:6px;padding:6px 14px;border-radius:999px;border:1px solid var(--warn-line);background:transparent;color:var(--fg);cursor:pointer}
+.go{display:grid;gap:12px;margin-top:8px}
+.go a{display:block;text-decoration:none;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.go a strong{display:block;font-size:17px;color:var(--accent)}
+.go a span{color:var(--muted);font-size:15px}
+.go a.main{background:var(--accent);border-color:var(--accent)}
+.go a.main strong,.go a.main span{color:var(--accent-fg)}
+.go a:focus-visible,button.copy:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+ol.need{padding-left:22px;margin:0}
+footer{margin-top:48px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+@media (min-width:720px){h1{font-size:36px}.go{grid-template-columns:1fr 1fr}.go a.main{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<main>
+  <h1>我太健忘了，<br>所以做了一個 AI 秘書。</h1>
+  <p class="lead">答應別人的事會忘，待辦寫了也不會回頭看。之前用 n8n 串過自動化，但它總要我先把流程想好才會動。所以我跟 Claude 一起，做了一個會記得我說過的話、時間到會提醒我的秘書。用了一個多月，整理成手冊分享給你。</p>
+
+  <div class="tg" role="img" aria-label="Telegram 對話示意：週五晚上請秘書下週一提醒報價，週一早上收到晨報和提醒">
+    <div class="tg-head"><strong>YH Melo</strong><span>機器人</span></div>
+    <div class="tg-body">
+      <div class="tg-day">10月16日 星期五</div>
+      <div class="tg-row"><div class="tg-av me">我</div><div class="tg-msg me">下週一早上記得提醒我報價給 A 公司<span class="tg-time">下午 10:07 ✓✓</span></div></div>
+      <div class="tg-row"><div class="tg-av bot">YM</div><div class="tg-msg">好，下週一（10/19）早上 09:00 提醒你報價給 A 公司。
+
+⏰ 已設定提醒 10/19（一）09:00「報價給 A 公司」（目前共 1 件提醒）<span class="tg-time">下午 10:07</span></div></div>
+      <div class="tg-day">10月19日 星期一</div>
+      <div class="tg-row"><div class="tg-av bot">YM</div><div class="tg-msg">☀️ 早安！今天是 10/19（一）
+
+<b>🗓 今天的行程</b>
+- 10:30–11:30 A 公司來訪
+- 13:30 產銷會議
+
+<b>⏰ 今天的提醒</b>
+- 09:00 報價給 A 公司
+
+<b>📝 還沒完成的事</b>
+- 跟進 B 公司交機最新進度<span class="tg-time">上午 07:30</span></div></div>
+      <div class="tg-row"><div class="tg-av bot">YM</div><div class="tg-msg">⏰ 提醒：報價給 A 公司<span class="tg-time">上午 09:00</span></div></div>
+    </div>
+  </div>
+
+  <h2>它能幫你做什麼</h2>
+  <ul class="can">
+    <li><strong>記得你交代的事</strong><span>說「記下來」它就記住；每天的對話自動整理成工作日誌。</span></li>
+    <li><strong>時間到主動提醒你</strong><span>提醒、待辦追蹤，每天早上還會傳一則晨報給你。</span></li>
+    <li><strong>看行事曆、幫你擬信</strong><span>接上 Google 行事曆和 Gmail；寄信、改行程前一定先傳按鈕問你。</span></li>
+    <li><strong>做文件、查地圖排行程</strong><span>Word、Excel 直接傳到手機；排行程會避開公休日。</span></li>
+  </ul>
+
+  <div class="note">
+    <p><strong>📱 你現在用手機嗎？</strong>手冊要在<strong>電腦</strong>上跟著做（要安裝東西），請先把這一頁存起來，或傳給自己，等開電腦再打開。</p>
+    <button type="button" class="copy" id="copy">複製這一頁的網址</button>
+  </div>
+
+  <h2>從這裡開始</h2>
+  <div class="go">
+    <a class="main" href="AI秘書_桌面版_L0-L1_學員手冊.html">
+      <strong>開始做：跟著做手冊（L0～L1）</strong>
+      <span>從零開始：先準備好一位幫你動手的 AI，再請它把秘書做出來。</span>
+    </a>
+    <a href="AI秘書_桌面版_L0-L1_測試流程.html">
+      <strong>幫忙測試：測試流程</strong>
+      <span>照著一步步做，記下哪裡卡住。</span>
+    </a>
+    <a href="AI秘書_L0-L3_測試清單.html">
+      <strong>測試清單（可勾選）</strong>
+      <span>做完一項勾一項，想分享的話可以匯出結果傳給我。</span>
+    </a>
+    <a href="https://github.com/carmelotsai/AI-Agent">
+      <strong>全部教材與程式（GitHub）</strong>
+      <span>L0 到 L4 的跟著做手冊、施工工單與完整程式。</span>
+    </a>
+  </div>
+
+  <h2>要準備的東西</h2>
+  <ol class="need">
+    <li>一台 Windows 電腦（Mac 還沒完整測過）</li>
+    <li>一個 Google 帳號</li>
+    <li>手機上的 Telegram</li>
+  </ol>
+  <p style="margin-top:12px">不用會寫程式。用 Google 的免費額度就能先試；要接公司信箱或客戶資料之前，手冊會提醒你先開通計費。</p>
+
+  <h2>卡住了？</h2>
+  <p>先把畫面截圖貼給幫你動手的那位 AI（手冊裡叫它「施工人員」），問它「這是什麼意思、下一步怎麼做」。大部分的問題它都能陪你解決，學會這樣問 AI，本身就是這套做法的一部分。</p>
+  <p>真的撞牆了，或發現手冊哪裡寫錯、有更好的做法，也歡迎私訊我的 IG 或到 <a href="https://github.com/carmelotsai/AI-Agent/issues">GitHub</a> 留言分享。我也是邊做邊學，大家一起交流、一起成長。（截圖記得先遮掉金鑰和帳號。）</p>
+
+  <footer>
+    健忘人的秘書養成日記・Carmelo Tsai<br>
+    程式採 MIT 授權，教材採 CC BY-NC-SA 4.0（可以免費學習、分享，不可用於收費課程）。詳見 <a href="https://github.com/carmelotsai/AI-Agent/blob/main/LICENSE">LICENSE</a>。
+  </footer>
+</main>
+<script>
+document.getElementById("copy").addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  try {
+    await navigator.clipboard.writeText(location.href);
+    button.textContent = "已複製，貼給自己吧 ✓";
+  } catch {
+    button.textContent = "請長按網址列複製";
+  }
+});
+</script>
+</body>
+</html>
